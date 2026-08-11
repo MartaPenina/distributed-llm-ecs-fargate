@@ -3,8 +3,8 @@ set -e
 
 # === Configuration ===
 REGION="eu-central-1"
-BUCKET_NAME="distributed-llm-aws-tf-state-v2"
-DYNAMODB_TABLE="distributed-llm-aws-state-lock"
+BUCKET_NAME="distributed-llm-ecs-fargate-tf-state"
+DYNAMODB_TABLE="distributed-llm-ecs-fargate-state-lock"
 IAM_USER="terraform-sa"
 POLICY_NAME="TerraformDistributedLLMPolicy"
 
@@ -86,7 +86,10 @@ cat > "$POLICY_FILE" <<'POLICY'
     {"Sid": "IAMForUserSelf", "Effect": "Allow", "Action": ["iam:ListAttachedUserPolicies"], "Resource": "arn:aws:iam::*:user/terraform-sa"},
     {"Sid": "SSM", "Effect": "Allow", "Action": ["ssm:PutParameter","ssm:GetParameter","ssm:GetParameters","ssm:DeleteParameter","ssm:DescribeParameters","ssm:AddTagsToResource","ssm:ListTagsForResource"], "Resource": "*"},
     {"Sid": "IAMForInstances", "Effect": "Allow", "Action": ["iam:CreateRole","iam:DeleteRole","iam:GetRole","iam:PassRole","iam:AttachRolePolicy","iam:DetachRolePolicy","iam:ListAttachedRolePolicies","iam:CreateInstanceProfile","iam:DeleteInstanceProfile","iam:GetInstanceProfile","iam:AddRoleToInstanceProfile","iam:RemoveRoleFromInstanceProfile","iam:ListInstanceProfilesForRole","iam:TagRole","iam:ListRoleTags","iam:CreateServiceLinkedRole","iam:ListRolePolicies","iam:PutRolePolicy","iam:GetRolePolicy","iam:DeleteRolePolicy","iam:TagInstanceProfile"], "Resource": "*"},
-    {"Sid": "Route53", "Effect": "Allow", "Action": ["route53:*"], "Resource": "*"}
+    {"Sid": "Route53", "Effect": "Allow", "Action": ["route53:*"], "Resource": "*"},
+    {"Sid": "ECR", "Effect": "Allow", "Action": ["ecr:*"], "Resource": "*"},
+    {"Sid": "ECS", "Effect": "Allow", "Action": ["ecs:*"], "Resource": "*"},
+    {"Sid": "EFS", "Effect": "Allow", "Action": ["elasticfilesystem:*"], "Resource": "*"}
   ]
 }
 POLICY

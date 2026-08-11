@@ -15,7 +15,7 @@ Based on source code and infrastructure decisions carried over from Task 2
 This repo was just created and populated with Task 2 source as a starting point
 (branch `task3`). Nothing below is implemented yet — this is a live checklist.
 
-## Mentor guidance (execution plan)
+## Guidance (execution plan)
 
 1. **Order of execution**: Container Registry Setup (ECR) is done manually in
    the AWS Console first, to build hands-on understanding, before automating it
