@@ -89,7 +89,10 @@ cat > "$POLICY_FILE" <<'POLICY'
     {"Sid": "Route53", "Effect": "Allow", "Action": ["route53:*"], "Resource": "*"},
     {"Sid": "ECR", "Effect": "Allow", "Action": ["ecr:*"], "Resource": "*"},
     {"Sid": "ECS", "Effect": "Allow", "Action": ["ecs:*"], "Resource": "*"},
-    {"Sid": "EFS", "Effect": "Allow", "Action": ["elasticfilesystem:*"], "Resource": "*"}
+    {"Sid": "EFS", "Effect": "Allow", "Action": ["elasticfilesystem:*"], "Resource": "*"},
+    {"Sid": "Backup", "Effect": "Allow", "Action": ["backup:*"], "Resource": "*"},
+    {"Sid": "BackupStorage", "Effect": "Allow", "Action": ["backup-storage:*"], "Resource": "*"},
+    {"Sid": "KMSForBackup", "Effect": "Allow", "Action": ["kms:CreateGrant", "kms:DescribeKey", "kms:GenerateDataKey", "kms:Decrypt"], "Resource": "*"}
   ]
 }
 POLICY

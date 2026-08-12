@@ -118,3 +118,20 @@ resource "aws_iam_role_policy" "ecs_task_ssm" {
     }]
   })
 }
+
+# ── EFS Security Group — only reachable from ECS tasks (NFS port) ─────
+resource "aws_security_group" "efs" {
+  name        = "${var.project_name}-${var.environment}-efs-sg"
+  description = "Allow NFS from ECS tasks only"
+  vpc_id      = var.vpc_id
+
+  ingress {
+    from_port       = 2049
+    to_port         = 2049
+    protocol        = "tcp"
+    security_groups = [aws_security_group.ecs_tasks.id]
+    description     = "NFS from ECS tasks only"
+  }
+
+  tags = { Name = "${var.project_name}-${var.environment}-efs-sg" }
+}
