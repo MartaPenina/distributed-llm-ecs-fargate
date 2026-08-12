@@ -1,24 +1,17 @@
-output "bastion_public_ip" {
-  description = "Bastion Host public IP — use for SSH access"
-  value       = module.compute.bastion_public_ip
+# Root-level outputs — currently exposes only networking module values
+# (bastion/asg outputs removed since compute module is disabled)
+output "vpc_id" {
+  value = module.networking.vpc_id
 }
 
-output "asg_name" {
-  description = "Auto Scaling Group name"
-  value       = module.compute.asg_name
+output "public_subnet_ids" {
+  value = module.networking.public_subnet_ids
+}
+
+output "private_app_subnet_ids" {
+  value = module.networking.private_app_subnet_ids
 }
 
 output "private_db_subnet_ids" {
-  description = "Private DB subnet IDs — used by the separate RDS Terraform project"
-  value       = module.networking.private_db_subnet_ids
-}
-
-output "rds_sg_id" {
-  description = "RDS security group ID — used by the separate RDS Terraform project"
-  value       = module.security.rds_sg_id
-}
-
-output "ollama_internal_alb_dns" {
-  description = "Internal ALB DNS for Flowise→Ollama communication within VPC"
-  value       = module.compute.ollama_internal_alb_dns
+  value = module.networking.private_db_subnet_ids
 }

@@ -1,3 +1,4 @@
+# AWS + archive provider config for the root Task 3 stack
 terraform {
   required_providers {
     aws = {
@@ -17,10 +18,10 @@ provider "aws" {
   profile = var.aws_profile
 
   default_tags {
-    tags = {
-      Project     = "distributed-llm-aws"
-      Environment = var.environment
-      ManagedBy   = "terraform"
-    }
+  tags = {
+    Project     = "distributed-llm-ecs-fargate"   
+    Environment = var.environment
+    ManagedBy   = "terraform"
   }
+}
 }
