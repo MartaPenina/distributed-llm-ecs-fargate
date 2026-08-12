@@ -1,7 +1,5 @@
-# Prometheus config for the bastion host (runs alongside AnythingLLM,
-# no separate monitoring host). Receives metrics from Grafana Agent
-# (LLM1/LLM2) via remote_write.
-
+# Prometheus config for ECS Fargate — scrapes Ollama, AnythingLLM, and itself
+# directly via Service Connect DNS names, no remote_write/Grafana Agent needed
 global:
   scrape_interval: 15s
   evaluation_interval: 15s
@@ -11,6 +9,12 @@ scrape_configs:
     static_configs:
       - targets: ["localhost:9090"]
 
-  - job_name: "alertmanager"
+  - job_name: "ollama"
     static_configs:
-      - targets: ["alertmanager:9093"]
+      - targets: ["ollama:11434"]
+    metrics_path: /metrics
+
+  - job_name: "anythingllm"
+    static_configs:
+      - targets: ["anythingllm:3001"]
+    metrics_path: /metrics

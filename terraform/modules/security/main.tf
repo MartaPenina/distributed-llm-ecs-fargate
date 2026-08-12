@@ -92,6 +92,25 @@ resource "aws_iam_role_policy_attachment" "ecs_task_execution" {
   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
 }
 
+# Task Execution Role needs explicit EFS permissions to mount access points —
+# AmazonECSTaskExecutionRolePolicy alone doesn't cover this
+resource "aws_iam_role_policy" "ecs_task_execution_efs" {
+  name = "${var.project_name}-${var.environment}-ecs-execution-efs-policy"
+  role = aws_iam_role.ecs_task_execution.id
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [{
+      Effect = "Allow"
+      Action = [
+        "elasticfilesystem:ClientMount",
+        "elasticfilesystem:ClientWrite",
+        "elasticfilesystem:DescribeMountTargets"
+      ]
+      Resource = "*"
+    }]
+  })
+}
+
 # ── ECS Task Role — used by the app code inside the container ─
 resource "aws_iam_role" "ecs_task" {
   name = "${var.project_name}-${var.environment}-ecs-task-role"
@@ -134,4 +153,21 @@ resource "aws_security_group" "efs" {
   }
 
   tags = { Name = "${var.project_name}-${var.environment}-efs-sg" }
+}
+
+# Task Execution Role needs SSM read access to pull secrets into containers at startup
+resource "aws_iam_role_policy" "ecs_task_execution_ssm" {
+  name = "${var.project_name}-${var.environment}-ecs-execution-ssm-policy"
+  role = aws_iam_role.ecs_task_execution.id
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [{
+      Effect = "Allow"
+      Action = ["ssm:GetParameters", "ssm:GetParameter"]
+      Resource = [
+        "arn:aws:ssm:*:*:parameter/distributed-llm-aws/*",
+        "arn:aws:ssm:*:*:parameter/${var.project_name}/*"
+      ]
+    }]
+  })
 }

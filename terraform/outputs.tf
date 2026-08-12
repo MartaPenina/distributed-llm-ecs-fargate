@@ -15,3 +15,7 @@ output "private_app_subnet_ids" {
 output "private_db_subnet_ids" {
   value = module.networking.private_db_subnet_ids
 }
+
+output "private_route_table_id" {
+  value = module.networking.private_route_table_id
+}

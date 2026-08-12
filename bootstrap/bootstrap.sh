@@ -92,7 +92,9 @@ cat > "$POLICY_FILE" <<'POLICY'
     {"Sid": "EFS", "Effect": "Allow", "Action": ["elasticfilesystem:*"], "Resource": "*"},
     {"Sid": "Backup", "Effect": "Allow", "Action": ["backup:*"], "Resource": "*"},
     {"Sid": "BackupStorage", "Effect": "Allow", "Action": ["backup-storage:*"], "Resource": "*"},
-    {"Sid": "KMSForBackup", "Effect": "Allow", "Action": ["kms:CreateGrant", "kms:DescribeKey", "kms:GenerateDataKey", "kms:Decrypt"], "Resource": "*"}
+    {"Sid": "KMSForBackup", "Effect": "Allow", "Action": ["kms:CreateGrant", "kms:DescribeKey", "kms:GenerateDataKey", "kms:Decrypt"], "Resource": "*"},
+    {"Sid": "ServiceDiscovery", "Effect": "Allow", "Action": ["servicediscovery:*"], "Resource": "*"},
+    {"Sid": "AppAutoScaling", "Effect": "Allow", "Action": ["application-autoscaling:*"], "Resource": "*"}
   ]
 }
 POLICY
