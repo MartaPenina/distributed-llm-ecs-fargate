@@ -55,7 +55,7 @@ resource "aws_cloudwatch_log_group" "ollama" {
 # ECS Service — keeps 1 Ollama task running, restarts it if it dies
 resource "aws_ecs_service" "ollama" {
   name            = "${var.project_name}-${var.environment}-ollama"
-  cluster         = var.ecs_cluster_id
+  cluster = var.ollama_cluster_id
   task_definition = aws_ecs_task_definition.ollama.arn
   desired_count   = 1
   launch_type     = "FARGATE"

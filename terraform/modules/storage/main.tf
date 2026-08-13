@@ -16,27 +16,6 @@ resource "aws_efs_mount_target" "main" {
   security_groups = [var.efs_sg_id]
 }
 
-# Access point for Prometheus — isolated directory + POSIX permissions
-resource "aws_efs_access_point" "prometheus" {
-  file_system_id = aws_efs_file_system.main.id
-
-  posix_user {
-    uid = 65534  # nobody user — matches Prometheus container's default non-root user
-    gid = 65534
-  }
-
-  root_directory {
-    path = "/prometheus-data"
-    creation_info {
-      owner_uid   = 65534
-      owner_gid   = 65534
-      permissions = "755"
-    }
-  }
-
-  tags = { Name = "${var.project_name}-${var.environment}-prometheus-ap" }
-}
-
 # Access point for AnythingLLM storage
 resource "aws_efs_access_point" "anythingllm" {
   file_system_id = aws_efs_file_system.main.id

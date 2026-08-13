@@ -31,7 +31,7 @@ resource "aws_ecr_repository_policy" "ollama_llm" {
       {
         Sid       = "AllowTerraformSAPushPull"
         Effect    = "Allow"
-        Principal = { AWS = "arn:aws:iam::332250067977:user/terraform-sa" }
+        Principal = { AWS = "arn:aws:iam::095083225584:user/terraform-sa" }
         Action = [
           "ecr:GetDownloadUrlForLayer",
           "ecr:BatchGetImage",

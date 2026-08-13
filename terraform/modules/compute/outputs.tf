@@ -1,4 +1,4 @@
-# Exposes cluster identifiers for the future Task Definition/Service module
-output "cluster_id"   { value = aws_ecs_cluster.main.id }
-output "cluster_name" { value = aws_ecs_cluster.main.name }
-output "cluster_arn"  { value = aws_ecs_cluster.main.arn }
+output "ollama_cluster_id"        { value = aws_ecs_cluster.ollama.id }
+output "ollama_cluster_name"      { value = aws_ecs_cluster.ollama.name }
+output "anythingllm_cluster_id"   { value = aws_ecs_cluster.anythingllm.id }
+output "anythingllm_cluster_name" { value = aws_ecs_cluster.anythingllm.name }

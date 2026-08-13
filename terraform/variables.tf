@@ -23,13 +23,12 @@ variable "project_name" {
   default     = "distributed-llm-ecs-fargate"
 }
 
-variable "existing_vpc_id" {
-  description = "ID of the VPC that survived the Task 2 destroy"
+variable "vpc_cidr" {
+  description = "CIDR block for the VPC"
   type        = string
 }
-
-variable "existing_private_db_subnet_ids" {
-  description = "IDs of the private DB subnets that survived the Task 2 destroy"
+variable "private_db_subnet_cidrs" {
+  description = "Private DB subnet CIDRs (for RDS, across 2 AZ)"
   type        = list(string)
 }
 

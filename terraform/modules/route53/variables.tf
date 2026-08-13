@@ -1,4 +1,5 @@
-variable "bastion_public_ip" {
-  description = "Bastion Elastic IP — A records point directly here (no ALB)"
-  type        = string
-}
+variable "project_name"  { type = string }
+variable "environment"   { type = string }
+variable "parent_domain" { type = string }
+variable "alb_dns_name"  { type = string }
+variable "alb_zone_id"   { type = string }

@@ -1,5 +1,5 @@
 output "vpc_id" {
-  value = data.aws_vpc.main.id
+  value = aws_vpc.main.id
 }
 
 output "public_subnet_ids" {
@@ -11,7 +11,7 @@ output "private_app_subnet_ids" {
 }
 
 output "private_db_subnet_ids" {
-  value = data.aws_subnet.private_db[*].id
+  value = aws_subnet.private_db[*].id
 }
 
 output "private_route_table_id" {

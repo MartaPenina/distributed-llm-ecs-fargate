@@ -1,6 +1,7 @@
 resource "aws_db_subnet_group" "main" {
   name       = "${var.project_name}-${var.environment}-db-subnet-group"
-  subnet_ids = concat(var.db_subnet_ids, [aws_subnet.db_second_az.id])
+  subnet_ids = var.db_subnet_ids
+
 
   tags = { Name = "${var.project_name}-${var.environment}-db-subnet-group" }
 }
@@ -51,19 +52,4 @@ resource "aws_db_instance" "postgres" {
   lifecycle {
     prevent_destroy = true
   }
-}
-
-# Second DB subnet (eu-central-1b) — RDS subnet groups require 2+ AZ coverage,
-# even for single-AZ instances. Only one DB subnet survived the Task 2 destroy.
-resource "aws_subnet" "db_second_az" {
-  vpc_id            = var.vpc_id
-  cidr_block        = var.db_second_subnet_cidr
-  availability_zone = "eu-central-1b"
-
-  tags = { Name = "${var.project_name}-${var.environment}-private-db-2" }
-}
-
-resource "aws_route_table_association" "db_second_az" {
-  subnet_id      = aws_subnet.db_second_az.id
-  route_table_id = var.private_route_table_id
 }

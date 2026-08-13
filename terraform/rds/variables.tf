@@ -3,9 +3,6 @@ variable "aws_profile" { type = string }
 variable "project_name" { type = string }
 variable "environment" { type = string }
 
-variable "main_state_bucket" { type = string }
-variable "main_state_key" { type = string }
-
 variable "db_name" { type = string }
 variable "db_username" {
   type      = string

@@ -44,9 +44,9 @@ resource "aws_ecs_task_definition" "anythingllm" {
 
       # secrets pulled from SSM at task start — never hardcoded in the image or env
       secrets = [
-        { name = "DATABASE_URL",        valueFrom = "/distributed-llm-aws/dev/database_url" },
-        { name = "AUTH_TOKEN",           valueFrom = "/distributed-llm-aws/dev/anythingllm_password" },
-        { name = "JWT_SECRET",           valueFrom = "/distributed-llm-aws/dev/anythingllm_jwt_secret" }
+        { name = "DATABASE_URL",  valueFrom = "/distributed-llm-ecs-fargate/dev/database_url" },
+        { name = "AUTH_TOKEN",     valueFrom = "/distributed-llm-ecs-fargate/dev/anythingllm_password" },
+        { name = "JWT_SECRET",     valueFrom = "/distributed-llm-ecs-fargate/dev/anythingllm_jwt_secret" }
       ]
 
       environment = [
@@ -82,7 +82,7 @@ resource "aws_cloudwatch_log_group" "anythingllm" {
 
 resource "aws_ecs_service" "anythingllm" {
   name            = "${var.project_name}-${var.environment}-anythingllm"
-  cluster         = var.ecs_cluster_id
+  cluster = var.anythingllm_cluster_id
   task_definition = aws_ecs_task_definition.anythingllm.arn
   desired_count   = 1
   launch_type     = "FARGATE"

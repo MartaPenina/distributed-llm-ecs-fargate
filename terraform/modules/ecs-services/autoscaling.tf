@@ -2,7 +2,7 @@
 resource "aws_appautoscaling_target" "ollama" {
   max_capacity       = 3
   min_capacity       = 1
-  resource_id        = "service/${var.ecs_cluster_name}/${aws_ecs_service.ollama.name}"
+  resource_id        = "service/${var.ollama_cluster_name}/${aws_ecs_service.ollama.name}"
   scalable_dimension  = "ecs:service:DesiredCount"
   service_namespace   = "ecs"
 }
@@ -10,7 +10,7 @@ resource "aws_appautoscaling_target" "ollama" {
 resource "aws_appautoscaling_policy" "ollama_cpu" {
   name               = "${var.project_name}-${var.environment}-ollama-cpu-scaling"
   policy_type        = "TargetTrackingScaling"
-  resource_id        = aws_appautoscaling_target.ollama.resource_id
+  resource_id = "service/${var.ollama_cluster_name}/${aws_ecs_service.ollama.name}"
   scalable_dimension = aws_appautoscaling_target.ollama.scalable_dimension
   service_namespace  = aws_appautoscaling_target.ollama.service_namespace
 
