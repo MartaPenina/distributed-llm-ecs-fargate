@@ -20,6 +20,22 @@ resource "aws_security_group" "grafana_bastion" {
     description = "Grafana UI - SoftServe IP ranges only"
   }
 
+  ingress {
+    from_port   = 80
+    to_port     = 80
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+    description = "HTTP - needed for Lets Encrypt HTTP-01 challenge and redirect to HTTPS"
+  }
+
+  ingress {
+    from_port   = 443
+    to_port     = 443
+    protocol    = "tcp"
+    cidr_blocks = var.allowed_cidrs
+    description = "HTTPS Grafana UI - SoftServe IP ranges only"
+  }
+
   egress {
     from_port   = 0
     to_port     = 0

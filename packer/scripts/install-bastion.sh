@@ -14,6 +14,56 @@ sudo usermod -aG docker ec2-user
 echo "Installing AWS CLI (needed to read SSM secrets at boot)..."
 sudo dnf install -y aws-cli
 
+echo "Installing nginx and certbot for HTTPS..."
+sudo dnf install -y nginx python3-certbot-nginx
+
+echo "Configuring nginx as reverse proxy to Grafana (localhost:3000)..."
+sudo tee /etc/nginx/conf.d/grafana.conf > /dev/null <<'NGINX'
+server {
+    listen 80;
+    server_name grafana.ecs.fault-lens-penina.pp.ua;
+
+    location / {
+        proxy_pass http://127.0.0.1:3000;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+}
+NGINX
+
+sudo systemctl enable nginx
+sudo systemctl start nginx
+
+# NOTE: certbot is NOT run here at image-build time — DNS must already point
+# at this instance's Elastic IP before certbot can validate ownership
+# (HTTP-01 challenge), and the EIP isn't attached yet during the Packer
+# build. Certbot runs once, automatically, after boot instead.
+
+echo "Setting up one-shot certbot service (runs after boot, once EIP + DNS are live)..."
+sudo tee /etc/systemd/system/certbot-init.service > /dev/null <<'SVC'
+[Unit]
+Description=Obtain Let's Encrypt certificate for Grafana (one-shot, after network is up)
+After=network-online.target nginx.service
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/certbot --nginx -d grafana.ecs.fault-lens-penina.pp.ua --non-interactive --agree-tos -m marta.penina.academic@gmail.com --redirect
+RemainAfterExit=yes
+
+[Install]
+WantedBy=multi-user.target
+SVC
+
+sudo systemctl daemon-reload
+sudo systemctl enable certbot-init.service
+# Not started here — DNS won't resolve to this host during the Packer build.
+# It runs automatically on first real boot instead.
+
+echo "Certbot auto-renewal is installed system-wide by the certbot package (systemd timer certbot-renew.timer) — no extra config needed."
+
 echo "Setting up Grafana provisioning (CloudWatch data source)..."
 sudo mkdir -p /etc/grafana-provisioning/datasources
 sudo cp /tmp/grafana-datasource-cloudwatch.yaml /etc/grafana-provisioning/datasources/cloudwatch.yaml

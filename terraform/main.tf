@@ -66,7 +66,7 @@ module "load_balancer" {
   alb_sg_id         = module.security.alb_sg_id
   private_app_subnet_ids = module.networking.private_app_subnet_ids
   ecs_tasks_sg_id         = module.security.ecs_tasks_sg_id
-  # acm_certificate_arn left empty for now — HTTP only until we request the cert
+  acm_certificate_arn = module.route53.certificate_arn
 }
 
 module "monitoring" {
