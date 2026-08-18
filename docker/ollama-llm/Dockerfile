@@ -20,4 +20,4 @@ RUN ollama serve & \
     done
 
 ENV OLLAMA_HOST=0.0.0.0
-CMD ["ollama", "serve"]
+CMD ["ollama", "serve"]# trigger test
