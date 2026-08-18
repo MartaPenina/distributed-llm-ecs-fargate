@@ -14,6 +14,10 @@ env:
   ECR_REPOSITORY: ollama-llm
   ECS_CLUSTER: distributed-llm-ecs-fargate-dev-ollama-cluster
   ECS_SERVICE: distributed-llm-ecs-fargate-dev-ollama
+  # One model or several, space-separated. This is the ONLY place you need
+  # to touch to change which model(s) ship in the image — Dockerfile itself
+  # stays generic and never needs editing for a model change.
+  MODEL_NAMES: "qwen2.5:3b"
 
 jobs:
   build-and-deploy:
@@ -43,7 +47,9 @@ jobs:
           ECR_REGISTRY: ${{ steps.ecr-login.outputs.registry }}
           IMAGE_TAG: ${{ github.sha }}
         run: |
-          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG docker/ollama-llm/
+          docker build \
+            --build-arg MODEL_NAMES="$MODEL_NAMES" \
+            -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG docker/ollama-llm/
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
           echo "image=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" >> "$GITHUB_OUTPUT"
 
