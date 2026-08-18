@@ -15,3 +15,10 @@ variable "ecs_tasks_sg_id"               { type = string }
 variable "ecr_repository_url"            { type = string }
 variable "efs_id"                        { type = string }
 variable "anythingllm_access_point_id"   { type = string }
+
+variable "anythingllm_target_group_arn" { type = string }
+
+variable "alb_arn_suffix" { type = string }
+variable "anythingllm_target_group_arn_suffix" { type = string }
+
+variable "ollama_target_group_arn" { type = string }

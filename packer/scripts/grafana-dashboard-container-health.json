@@ -2,21 +2,13 @@
   "apiVersion": "dashboard.grafana.app/v2",
   "kind": "Dashboard",
   "metadata": {
-    "name": "db-health-dash",
+    "name": "container-health-dash",
     "namespace": "default",
-    "uid": "8c13bd4e-5eb3-4ea0-878a-4de8c153e7dd",
-    "resourceVersion": "1785932464400987",
-    "generation": 6,
-    "creationTimestamp": "2026-08-05T11:48:10Z",
-    "labels": {
-      "grafana.app/deprecatedInternalID": "4306683342086144"
-    },
-    "annotations": {
-      "grafana.app/createdBy": "user:ffu6aepu29v5sa",
-      "grafana.app/saved-from-ui": "Grafana v13.1.2 (7f247b37a4)",
-      "grafana.app/updatedBy": "user:ffu6aepu29v5sa",
-      "grafana.app/updatedTimestamp": "2026-08-05T12:21:04Z"
-    }
+    "uid": "f1a2b3c4-d5e6-4f70-8a9b-0c1d2e3f4a5b",
+    "resourceVersion": "1",
+    "generation": 1,
+    "creationTimestamp": "2026-08-17T00:00:00Z",
+    "labels": {}
   },
   "spec": {
     "annotations": [
@@ -41,14 +33,14 @@
       }
     ],
     "cursorSync": "Off",
-    "description": "PostgreSQL RDS CPU, memory, storage, and connections",
+    "description": "ECS Fargate service CPU and memory utilization for Ollama and AnythingLLM",
     "editable": true,
     "elements": {
       "panel-1": {
         "kind": "Panel",
         "spec": {
           "id": 1,
-          "title": "RDS CPU Utilization",
+          "title": "Ollama CPU Utilization",
           "description": "",
           "links": [],
           "data": {
@@ -67,120 +59,14 @@
                       },
                       "spec": {
                         "dimensions": {
-                          "DBInstanceIdentifier": "distributed-llm-aws-dev-postgres"
+                          "ClusterName": "distributed-llm-ecs-fargate-dev-ollama-cluster",
+                          "ServiceName": "distributed-llm-ecs-fargate-dev-ollama"
                         },
                         "label": "",
                         "metricEditorMode": 0,
                         "metricName": "CPUUtilization",
                         "metricQueryType": 0,
-                        "namespace": "AWS/RDS",
-                        "queryMode": "Metrics",
-                        "region": "eu-central-1",
-                        "statistic": "Average"
-                      }
-                    },
-                    "refId": "A",
-                    "hidden": false
-                  }
-                }
-              ],
-              "transformations": [],
-              "queryOptions": {}
-            }
-          },
-          "vizConfig": {
-            "kind": "VizConfig",
-            "group": "gauge",
-            "version": "13.1.2",
-            "spec": {
-              "options": {
-                "barShape": "flat",
-                "barWidthFactor": 0.5,
-                "effects": {
-                  "barGlow": false,
-                  "centerGlow": false,
-                  "gradient": true
-                },
-                "endpointMarker": "point",
-                "minVizHeight": 75,
-                "minVizWidth": 75,
-                "orientation": "auto",
-                "reduceOptions": {
-                  "calcs": [
-                    "lastNotNull"
-                  ],
-                  "fields": "",
-                  "values": false
-                },
-                "segmentCount": 1,
-                "segmentSpacing": 0.3,
-                "shape": "gauge",
-                "showThresholdLabels": false,
-                "showThresholdMarkers": true,
-                "sizing": "auto",
-                "sparkline": true,
-                "textMode": "auto"
-              },
-              "fieldConfig": {
-                "defaults": {
-                  "unit": "percent",
-                  "thresholds": {
-                    "mode": "absolute",
-                    "steps": [
-                      {
-                        "value": 0,
-                        "color": "green"
-                      },
-                      {
-                        "value": 60,
-                        "color": "yellow"
-                      },
-                      {
-                        "value": 80,
-                        "color": "red"
-                      }
-                    ]
-                  },
-                  "color": {
-                    "mode": "thresholds"
-                  }
-                },
-                "overrides": []
-              }
-            }
-          }
-        }
-      },
-      "panel-2": {
-        "kind": "Panel",
-        "spec": {
-          "id": 2,
-          "title": "RDS CPU Over Time",
-          "description": "",
-          "links": [],
-          "data": {
-            "kind": "QueryGroup",
-            "spec": {
-              "queries": [
-                {
-                  "kind": "PanelQuery",
-                  "spec": {
-                    "query": {
-                      "kind": "DataQuery",
-                      "group": "cloudwatch",
-                      "version": "v0",
-                      "datasource": {
-                        "name": "P034F075C744B399F"
-                      },
-                      "spec": {
-                        "dimensions": {
-                          "DBInstanceIdentifier": "distributed-llm-aws-dev-postgres"
-                        },
-                        "label": "",
-                        "metricEditorMode": 0,
-                        "metricName": "CPUUtilization",
-                        "metricQueryType": 0,
-                        "namespace": "AWS/RDS",
+                        "namespace": "AWS/ECS",
                         "queryMode": "Metrics",
                         "region": "eu-central-1",
                         "statistic": "Average"
@@ -198,7 +84,7 @@
           "vizConfig": {
             "kind": "VizConfig",
             "group": "timeseries",
-            "version": "13.1.2",
+            "version": "13.1.3",
             "spec": {
               "options": {
                 "annotations": {
@@ -230,7 +116,144 @@
                         "color": "green"
                       },
                       {
-                        "value": 80,
+                        "value": 70,
+                        "color": "yellow"
+                      },
+                      {
+                        "value": 90,
+                        "color": "red"
+                      }
+                    ]
+                  },
+                  "color": {
+                    "mode": "palette-classic"
+                  },
+                  "custom": {
+                    "axisBorderShow": false,
+                    "axisCenteredZero": false,
+                    "axisColorMode": "text",
+                    "axisLabel": "",
+                    "axisPlacement": "auto",
+                    "barAlignment": 0,
+                    "barWidthFactor": 0.6,
+                    "drawStyle": "line",
+                    "fillOpacity": 0,
+                    "gradientMode": "none",
+                    "hideFrom": {
+                      "legend": false,
+                      "tooltip": false,
+                      "viz": false
+                    },
+                    "insertNulls": false,
+                    "lineInterpolation": "linear",
+                    "lineWidth": 1,
+                    "pointSize": 5,
+                    "scaleDistribution": {
+                      "type": "linear"
+                    },
+                    "showPoints": "auto",
+                    "showValues": false,
+                    "spanNulls": false,
+                    "stacking": {
+                      "group": "A",
+                      "mode": "none"
+                    },
+                    "thresholdsStyle": {
+                      "mode": "off"
+                    }
+                  }
+                },
+                "overrides": []
+              }
+            }
+          }
+        }
+      },
+      "panel-2": {
+        "kind": "Panel",
+        "spec": {
+          "id": 2,
+          "title": "Ollama Memory Utilization",
+          "description": "",
+          "links": [],
+          "data": {
+            "kind": "QueryGroup",
+            "spec": {
+              "queries": [
+                {
+                  "kind": "PanelQuery",
+                  "spec": {
+                    "query": {
+                      "kind": "DataQuery",
+                      "group": "cloudwatch",
+                      "version": "v0",
+                      "datasource": {
+                        "name": "P034F075C744B399F"
+                      },
+                      "spec": {
+                        "dimensions": {
+                          "ClusterName": "distributed-llm-ecs-fargate-dev-ollama-cluster",
+                          "ServiceName": "distributed-llm-ecs-fargate-dev-ollama"
+                        },
+                        "label": "",
+                        "metricEditorMode": 0,
+                        "metricName": "MemoryUtilization",
+                        "metricQueryType": 0,
+                        "namespace": "AWS/ECS",
+                        "queryMode": "Metrics",
+                        "region": "eu-central-1",
+                        "statistic": "Average"
+                      }
+                    },
+                    "refId": "A",
+                    "hidden": false
+                  }
+                }
+              ],
+              "transformations": [],
+              "queryOptions": {}
+            }
+          },
+          "vizConfig": {
+            "kind": "VizConfig",
+            "group": "timeseries",
+            "version": "13.1.3",
+            "spec": {
+              "options": {
+                "annotations": {
+                  "clustering": -1,
+                  "multiLane": false
+                },
+                "legend": {
+                  "calcs": [],
+                  "displayMode": "list",
+                  "enableFacetedFilter": false,
+                  "overflow": "ellipsis",
+                  "placement": "bottom",
+                  "showLegend": true
+                },
+                "tooltip": {
+                  "hideZeros": false,
+                  "mode": "single",
+                  "sort": "none"
+                }
+              },
+              "fieldConfig": {
+                "defaults": {
+                  "unit": "percent",
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "value": 0,
+                        "color": "green"
+                      },
+                      {
+                        "value": 70,
+                        "color": "yellow"
+                      },
+                      {
+                        "value": 90,
                         "color": "red"
                       }
                     ]
@@ -283,7 +306,7 @@
         "kind": "Panel",
         "spec": {
           "id": 3,
-          "title": "Freeable Memory",
+          "title": "AnythingLLM CPU Utilization",
           "description": "",
           "links": [],
           "data": {
@@ -302,227 +325,14 @@
                       },
                       "spec": {
                         "dimensions": {
-                          "DBInstanceIdentifier": "distributed-llm-aws-dev-postgres"
+                          "ClusterName": "distributed-llm-ecs-fargate-dev-anythingllm-cluster",
+                          "ServiceName": "distributed-llm-ecs-fargate-dev-anythingllm"
                         },
                         "label": "",
                         "metricEditorMode": 0,
-                        "metricName": "FreeableMemory",
+                        "metricName": "CPUUtilization",
                         "metricQueryType": 0,
-                        "namespace": "AWS/RDS",
-                        "queryMode": "Metrics",
-                        "region": "eu-central-1",
-                        "statistic": "Average"
-                      }
-                    },
-                    "refId": "A",
-                    "hidden": false
-                  }
-                }
-              ],
-              "transformations": [],
-              "queryOptions": {}
-            }
-          },
-          "vizConfig": {
-            "kind": "VizConfig",
-            "group": "gauge",
-            "version": "13.1.2",
-            "spec": {
-              "options": {
-                "barShape": "flat",
-                "barWidthFactor": 0.5,
-                "effects": {
-                  "barGlow": false,
-                  "centerGlow": false,
-                  "gradient": true
-                },
-                "endpointMarker": "point",
-                "minVizHeight": 75,
-                "minVizWidth": 75,
-                "orientation": "auto",
-                "reduceOptions": {
-                  "calcs": [
-                    "lastNotNull"
-                  ],
-                  "fields": "",
-                  "values": false
-                },
-                "segmentCount": 1,
-                "segmentSpacing": 0.3,
-                "shape": "gauge",
-                "showThresholdLabels": false,
-                "showThresholdMarkers": true,
-                "sizing": "auto",
-                "sparkline": true,
-                "textMode": "auto"
-              },
-              "fieldConfig": {
-                "defaults": {
-                  "unit": "bytes",
-                  "thresholds": {
-                    "mode": "absolute",
-                    "steps": [
-                      {
-                        "value": 0,
-                        "color": "red"
-                      },
-                      {
-                        "value": 200000000,
-                        "color": "yellow"
-                      },
-                      {
-                        "value": 500000000,
-                        "color": "green"
-                      }
-                    ]
-                  },
-                  "color": {
-                    "mode": "thresholds"
-                  }
-                },
-                "overrides": []
-              }
-            }
-          }
-        }
-      },
-      "panel-4": {
-        "kind": "Panel",
-        "spec": {
-          "id": 4,
-          "title": "Free Storage Space",
-          "description": "",
-          "links": [],
-          "data": {
-            "kind": "QueryGroup",
-            "spec": {
-              "queries": [
-                {
-                  "kind": "PanelQuery",
-                  "spec": {
-                    "query": {
-                      "kind": "DataQuery",
-                      "group": "cloudwatch",
-                      "version": "v0",
-                      "datasource": {
-                        "name": "P034F075C744B399F"
-                      },
-                      "spec": {
-                        "dimensions": {
-                          "DBInstanceIdentifier": "distributed-llm-aws-dev-postgres"
-                        },
-                        "label": "",
-                        "metricEditorMode": 0,
-                        "metricName": "FreeStorageSpace",
-                        "metricQueryType": 0,
-                        "namespace": "AWS/RDS",
-                        "queryMode": "Metrics",
-                        "region": "eu-central-1",
-                        "statistic": "Average"
-                      }
-                    },
-                    "refId": "A",
-                    "hidden": false
-                  }
-                }
-              ],
-              "transformations": [],
-              "queryOptions": {}
-            }
-          },
-          "vizConfig": {
-            "kind": "VizConfig",
-            "group": "gauge",
-            "version": "13.1.2",
-            "spec": {
-              "options": {
-                "barShape": "flat",
-                "barWidthFactor": 0.5,
-                "effects": {
-                  "barGlow": false,
-                  "centerGlow": false,
-                  "gradient": true
-                },
-                "endpointMarker": "point",
-                "minVizHeight": 75,
-                "minVizWidth": 75,
-                "orientation": "auto",
-                "reduceOptions": {
-                  "calcs": [
-                    "lastNotNull"
-                  ],
-                  "fields": "",
-                  "values": false
-                },
-                "segmentCount": 1,
-                "segmentSpacing": 0.3,
-                "shape": "gauge",
-                "showThresholdLabels": false,
-                "showThresholdMarkers": true,
-                "sizing": "auto",
-                "sparkline": true,
-                "textMode": "auto"
-              },
-              "fieldConfig": {
-                "defaults": {
-                  "unit": "bytes",
-                  "thresholds": {
-                    "mode": "absolute",
-                    "steps": [
-                      {
-                        "value": 0,
-                        "color": "red"
-                      },
-                      {
-                        "value": 2000000000,
-                        "color": "yellow"
-                      },
-                      {
-                        "value": 5000000000,
-                        "color": "green"
-                      }
-                    ]
-                  },
-                  "color": {
-                    "mode": "thresholds"
-                  }
-                },
-                "overrides": []
-              }
-            }
-          }
-        }
-      },
-      "panel-5": {
-        "kind": "Panel",
-        "spec": {
-          "id": 5,
-          "title": "Database Connections",
-          "description": "",
-          "links": [],
-          "data": {
-            "kind": "QueryGroup",
-            "spec": {
-              "queries": [
-                {
-                  "kind": "PanelQuery",
-                  "spec": {
-                    "query": {
-                      "kind": "DataQuery",
-                      "group": "cloudwatch",
-                      "version": "v0",
-                      "datasource": {
-                        "name": "P034F075C744B399F"
-                      },
-                      "spec": {
-                        "dimensions": {
-                          "DBInstanceIdentifier": "distributed-llm-aws-dev-postgres"
-                        },
-                        "label": "",
-                        "metricEditorMode": 0,
-                        "metricName": "DatabaseConnections",
-                        "metricQueryType": 0,
-                        "namespace": "AWS/RDS",
+                        "namespace": "AWS/ECS",
                         "queryMode": "Metrics",
                         "region": "eu-central-1",
                         "statistic": "Average"
@@ -540,7 +350,7 @@
           "vizConfig": {
             "kind": "VizConfig",
             "group": "timeseries",
-            "version": "13.1.2",
+            "version": "13.1.3",
             "spec": {
               "options": {
                 "annotations": {
@@ -563,7 +373,7 @@
               },
               "fieldConfig": {
                 "defaults": {
-                  "unit": "short",
+                  "unit": "percent",
                   "thresholds": {
                     "mode": "absolute",
                     "steps": [
@@ -572,7 +382,144 @@
                         "color": "green"
                       },
                       {
-                        "value": 80,
+                        "value": 70,
+                        "color": "yellow"
+                      },
+                      {
+                        "value": 90,
+                        "color": "red"
+                      }
+                    ]
+                  },
+                  "color": {
+                    "mode": "palette-classic"
+                  },
+                  "custom": {
+                    "axisBorderShow": false,
+                    "axisCenteredZero": false,
+                    "axisColorMode": "text",
+                    "axisLabel": "",
+                    "axisPlacement": "auto",
+                    "barAlignment": 0,
+                    "barWidthFactor": 0.6,
+                    "drawStyle": "line",
+                    "fillOpacity": 0,
+                    "gradientMode": "none",
+                    "hideFrom": {
+                      "legend": false,
+                      "tooltip": false,
+                      "viz": false
+                    },
+                    "insertNulls": false,
+                    "lineInterpolation": "linear",
+                    "lineWidth": 1,
+                    "pointSize": 5,
+                    "scaleDistribution": {
+                      "type": "linear"
+                    },
+                    "showPoints": "auto",
+                    "showValues": false,
+                    "spanNulls": false,
+                    "stacking": {
+                      "group": "A",
+                      "mode": "none"
+                    },
+                    "thresholdsStyle": {
+                      "mode": "off"
+                    }
+                  }
+                },
+                "overrides": []
+              }
+            }
+          }
+        }
+      },
+      "panel-4": {
+        "kind": "Panel",
+        "spec": {
+          "id": 4,
+          "title": "AnythingLLM Memory Utilization",
+          "description": "",
+          "links": [],
+          "data": {
+            "kind": "QueryGroup",
+            "spec": {
+              "queries": [
+                {
+                  "kind": "PanelQuery",
+                  "spec": {
+                    "query": {
+                      "kind": "DataQuery",
+                      "group": "cloudwatch",
+                      "version": "v0",
+                      "datasource": {
+                        "name": "P034F075C744B399F"
+                      },
+                      "spec": {
+                        "dimensions": {
+                          "ClusterName": "distributed-llm-ecs-fargate-dev-anythingllm-cluster",
+                          "ServiceName": "distributed-llm-ecs-fargate-dev-anythingllm"
+                        },
+                        "label": "",
+                        "metricEditorMode": 0,
+                        "metricName": "MemoryUtilization",
+                        "metricQueryType": 0,
+                        "namespace": "AWS/ECS",
+                        "queryMode": "Metrics",
+                        "region": "eu-central-1",
+                        "statistic": "Average"
+                      }
+                    },
+                    "refId": "A",
+                    "hidden": false
+                  }
+                }
+              ],
+              "transformations": [],
+              "queryOptions": {}
+            }
+          },
+          "vizConfig": {
+            "kind": "VizConfig",
+            "group": "timeseries",
+            "version": "13.1.3",
+            "spec": {
+              "options": {
+                "annotations": {
+                  "clustering": -1,
+                  "multiLane": false
+                },
+                "legend": {
+                  "calcs": [],
+                  "displayMode": "list",
+                  "enableFacetedFilter": false,
+                  "overflow": "ellipsis",
+                  "placement": "bottom",
+                  "showLegend": true
+                },
+                "tooltip": {
+                  "hideZeros": false,
+                  "mode": "single",
+                  "sort": "none"
+                }
+              },
+              "fieldConfig": {
+                "defaults": {
+                  "unit": "percent",
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "value": 0,
+                        "color": "green"
+                      },
+                      {
+                        "value": 70,
+                        "color": "yellow"
+                      },
+                      {
+                        "value": 90,
                         "color": "red"
                       }
                     ]
@@ -631,7 +578,7 @@
             "spec": {
               "x": 0,
               "y": 0,
-              "width": 6,
+              "width": 12,
               "height": 8,
               "element": {
                 "kind": "ElementReference",
@@ -642,9 +589,9 @@
           {
             "kind": "GridLayoutItem",
             "spec": {
-              "x": 6,
+              "x": 12,
               "y": 0,
-              "width": 18,
+              "width": 12,
               "height": 8,
               "element": {
                 "kind": "ElementReference",
@@ -657,24 +604,11 @@
             "spec": {
               "x": 0,
               "y": 8,
-              "width": 6,
+              "width": 12,
               "height": 8,
               "element": {
                 "kind": "ElementReference",
                 "name": "panel-3"
-              }
-            }
-          },
-          {
-            "kind": "GridLayoutItem",
-            "spec": {
-              "x": 6,
-              "y": 8,
-              "width": 6,
-              "height": 8,
-              "element": {
-                "kind": "ElementReference",
-                "name": "panel-4"
               }
             }
           },
@@ -687,7 +621,7 @@
               "height": 8,
               "element": {
                 "kind": "ElementReference",
-                "name": "panel-5"
+                "name": "panel-4"
               }
             }
           }
@@ -700,7 +634,7 @@
     "tags": [],
     "timeSettings": {
       "timezone": "browser",
-      "from": "now-1h",
+      "from": "now-3h",
       "to": "now",
       "autoRefresh": "",
       "autoRefreshIntervals": [
@@ -718,7 +652,7 @@
       "hideTimepicker": false,
       "fiscalYearStartMonth": 0
     },
-    "title": "Database Performance Dashboard",
+    "title": "Container Health Dashboard",
     "variables": [],
     "preferences": {
       "layout": {

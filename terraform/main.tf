@@ -11,9 +11,10 @@ module "networking" {
 module "security" {
   source = "./modules/security"
 
-  project_name = var.project_name
-  environment  = var.environment
-  vpc_id       = module.networking.vpc_id
+  project_name  = var.project_name
+  environment   = var.environment
+  vpc_id        = module.networking.vpc_id
+  allowed_cidrs = var.grafana_allowed_cidrs
 }
 
 module "compute" {
@@ -50,7 +51,47 @@ module "ecs_services" {
   ecr_repository_url          = "095083225584.dkr.ecr.eu-central-1.amazonaws.com/ollama-llm"
   efs_id                      = module.storage.efs_id
   anythingllm_access_point_id = module.storage.anythingllm_access_point_id
+  anythingllm_target_group_arn = module.load_balancer.anythingllm_target_group_arn
+  alb_arn_suffix                       = module.load_balancer.alb_arn_suffix
+  anythingllm_target_group_arn_suffix  = module.load_balancer.anythingllm_target_group_arn_suffix
+  ollama_target_group_arn = module.load_balancer.ollama_target_group_arn
 }
 
-# TODO: module "monitoring" — dimensions need to reference ECS Service, not ASG
-# TODO: module "route53" — needs new ALB DNS name, not bastion IP
+module "load_balancer" {
+  source = "./modules/load-balancer"
+  project_name      = var.project_name
+  environment       = var.environment
+  vpc_id            = module.networking.vpc_id
+  public_subnet_ids = module.networking.public_subnet_ids
+  alb_sg_id         = module.security.alb_sg_id
+  private_app_subnet_ids = module.networking.private_app_subnet_ids
+  ecs_tasks_sg_id         = module.security.ecs_tasks_sg_id
+  # acm_certificate_arn left empty for now — HTTP only until we request the cert
+}
+
+module "monitoring" {
+  source = "./modules/monitoring"
+
+  project_name      = var.project_name
+  environment       = var.environment
+  alert_email       = var.alert_email
+  vpc_id            = module.networking.vpc_id
+  public_subnet_id  = module.networking.public_subnet_ids[0]
+  allowed_cidrs     = var.grafana_allowed_cidrs
+  key_pair_name     = var.key_pair_name
+  ami_id = var.grafana_ami_id
+  db_instance_id = "distributed-llm-ecs-fargate-dev-postgres"
+  alb_arn_suffix = module.load_balancer.alb_arn_suffix
+  anythingllm_target_group_arn_suffix = module.load_balancer.anythingllm_target_group_arn_suffix
+}
+
+module "route53" {
+  source = "./modules/route53"
+
+  project_name  = var.project_name
+  environment   = var.environment
+  parent_domain = var.parent_domain
+  alb_dns_name  = module.load_balancer.alb_dns_name
+  alb_zone_id   = module.load_balancer.alb_zone_id
+  grafana_public_ip = module.monitoring.grafana_public_ip
+}

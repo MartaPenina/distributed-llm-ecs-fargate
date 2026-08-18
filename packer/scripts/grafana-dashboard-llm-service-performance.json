@@ -2,27 +2,13 @@
   "apiVersion": "dashboard.grafana.app/v2",
   "kind": "Dashboard",
   "metadata": {
-    "name": "llm-usage-dash",
+    "name": "llm-service-performance-dash",
     "namespace": "default",
-    "uid": "0c635ab5-0d5f-4e5d-b30b-c54743642710",
-    "resourceVersion": "1786355393380987",
-    "generation": 3,
-    "creationTimestamp": "2026-08-10T07:58:48Z",
-    "labels": {
-      "grafana.app/deprecatedInternalID": "1557300023853056"
-    },
-    "annotations": {
-      "grafana.app/createdBy": "access-policy:service",
-      "grafana.app/managedBy": "classic-file-provisioning",
-      "grafana.app/managerAllowsEdits": "true",
-      "grafana.app/managerId": "default",
-      "grafana.app/saved-from-ui": "Grafana v13.1.3 (45a27d64b6)",
-      "grafana.app/sourceChecksum": "afe2ef58fd4feb8295516eef896d424c",
-      "grafana.app/sourcePath": "/etc/grafana/provisioning/dashboards/llm-usage.json",
-      "grafana.app/sourceTimestamp": "1786347991000",
-      "grafana.app/updatedBy": "user:afuqpvzup02yof",
-      "grafana.app/updatedTimestamp": "2026-08-10T09:49:53Z"
-    }
+    "uid": "a1b2c3d4-e5f6-4789-9abc-1234567890ab",
+    "resourceVersion": "1",
+    "generation": 1,
+    "creationTimestamp": "2026-08-17T00:00:00Z",
+    "labels": {}
   },
   "spec": {
     "annotations": [
@@ -47,15 +33,15 @@
       }
     ],
     "cursorSync": "Off",
-    "description": "Ollama process CPU, memory, and liveness across LLM1/LLM2",
+    "description": "Ollama LLM service load and auto-scaling behavior — CPU load relative to the scaling threshold, task count over time, and memory pressure",
     "editable": true,
     "elements": {
       "panel-1": {
         "kind": "Panel",
         "spec": {
           "id": 1,
-          "title": "Ollama CPU Usage",
-          "description": "",
+          "title": "Ollama CPU Load vs Auto-Scaling Threshold (70%)",
+          "description": "How close Ollama is to triggering auto-scaling. A line consistently near or above the 70% threshold means the model is under sustained load.",
           "links": [],
           "data": {
             "kind": "QueryGroup",
@@ -73,124 +59,14 @@
                       },
                       "spec": {
                         "dimensions": {
-                          "AutoScalingGroupName": "distributed-llm-aws-dev-asg",
-                          "exe": "ollama",
-                          "process_name": "ollama_llama_server"
+                          "ClusterName": "distributed-llm-ecs-fargate-dev-ollama-cluster",
+                          "ServiceName": "distributed-llm-ecs-fargate-dev-ollama"
                         },
-                        "label": "",
+                        "label": "CPU Utilization",
                         "metricEditorMode": 0,
-                        "metricName": "procstat_cpu_usage",
+                        "metricName": "CPUUtilization",
                         "metricQueryType": 0,
-                        "namespace": "CWAgent",
-                        "queryMode": "Metrics",
-                        "region": "eu-central-1",
-                        "statistic": "Average"
-                      }
-                    },
-                    "refId": "A",
-                    "hidden": false
-                  }
-                }
-              ],
-              "transformations": [],
-              "queryOptions": {}
-            }
-          },
-          "vizConfig": {
-            "kind": "VizConfig",
-            "group": "gauge",
-            "version": "13.1.3",
-            "spec": {
-              "options": {
-                "barShape": "flat",
-                "barWidthFactor": 0.5,
-                "effects": {
-                  "barGlow": false,
-                  "centerGlow": false,
-                  "gradient": true
-                },
-                "endpointMarker": "point",
-                "minVizHeight": 75,
-                "minVizWidth": 75,
-                "orientation": "auto",
-                "reduceOptions": {
-                  "calcs": [
-                    "lastNotNull"
-                  ],
-                  "fields": "",
-                  "values": false
-                },
-                "segmentCount": 1,
-                "segmentSpacing": 0.3,
-                "shape": "gauge",
-                "showThresholdLabels": false,
-                "showThresholdMarkers": true,
-                "sizing": "auto",
-                "sparkline": true,
-                "textMode": "auto"
-              },
-              "fieldConfig": {
-                "defaults": {
-                  "unit": "percent",
-                  "thresholds": {
-                    "mode": "absolute",
-                    "steps": [
-                      {
-                        "value": 0,
-                        "color": "green"
-                      },
-                      {
-                        "value": 70,
-                        "color": "yellow"
-                      },
-                      {
-                        "value": 90,
-                        "color": "red"
-                      }
-                    ]
-                  },
-                  "color": {
-                    "mode": "thresholds"
-                  }
-                },
-                "overrides": []
-              }
-            }
-          }
-        }
-      },
-      "panel-2": {
-        "kind": "Panel",
-        "spec": {
-          "id": 2,
-          "title": "Ollama CPU Usage Over Time",
-          "description": "",
-          "links": [],
-          "data": {
-            "kind": "QueryGroup",
-            "spec": {
-              "queries": [
-                {
-                  "kind": "PanelQuery",
-                  "spec": {
-                    "query": {
-                      "kind": "DataQuery",
-                      "group": "cloudwatch",
-                      "version": "v0",
-                      "datasource": {
-                        "name": "P034F075C744B399F"
-                      },
-                      "spec": {
-                        "dimensions": {
-                          "AutoScalingGroupName": "distributed-llm-aws-dev-asg",
-                          "exe": "ollama",
-                          "process_name": "ollama_llama_server"
-                        },
-                        "label": "",
-                        "metricEditorMode": 0,
-                        "metricName": "procstat_cpu_usage",
-                        "metricQueryType": 0,
-                        "namespace": "CWAgent",
+                        "namespace": "AWS/ECS",
                         "queryMode": "Metrics",
                         "region": "eu-central-1",
                         "statistic": "Average"
@@ -216,7 +92,10 @@
                   "multiLane": false
                 },
                 "legend": {
-                  "calcs": [],
+                  "calcs": [
+                    "lastNotNull",
+                    "max"
+                  ],
                   "displayMode": "list",
                   "enableFacetedFilter": false,
                   "overflow": "ellipsis",
@@ -232,6 +111,8 @@
               "fieldConfig": {
                 "defaults": {
                   "unit": "percent",
+                  "max": 100,
+                  "min": 0,
                   "thresholds": {
                     "mode": "absolute",
                     "steps": [
@@ -240,7 +121,11 @@
                         "color": "green"
                       },
                       {
-                        "value": 80,
+                        "value": 70,
+                        "color": "orange"
+                      },
+                      {
+                        "value": 90,
                         "color": "red"
                       }
                     ]
@@ -257,7 +142,7 @@
                     "barAlignment": 0,
                     "barWidthFactor": 0.6,
                     "drawStyle": "line",
-                    "fillOpacity": 0,
+                    "fillOpacity": 10,
                     "gradientMode": "none",
                     "hideFrom": {
                       "legend": false,
@@ -266,7 +151,136 @@
                     },
                     "insertNulls": false,
                     "lineInterpolation": "linear",
-                    "lineWidth": 1,
+                    "lineWidth": 2,
+                    "pointSize": 5,
+                    "scaleDistribution": {
+                      "type": "linear"
+                    },
+                    "showPoints": "auto",
+                    "showValues": false,
+                    "spanNulls": false,
+                    "stacking": {
+                      "group": "A",
+                      "mode": "none"
+                    },
+                    "thresholdsStyle": {
+                      "mode": "line"
+                    }
+                  }
+                },
+                "overrides": []
+              }
+            }
+          }
+        }
+      },
+      "panel-2": {
+        "kind": "Panel",
+        "spec": {
+          "id": 2,
+          "title": "Ollama Running Task Count",
+          "description": "Number of active Ollama tasks over time. A rise above 1 confirms auto-scaling actually triggered a scale-out.",
+          "links": [],
+          "data": {
+            "kind": "QueryGroup",
+            "spec": {
+              "queries": [
+                {
+                  "kind": "PanelQuery",
+                  "spec": {
+                    "query": {
+                      "kind": "DataQuery",
+                      "group": "cloudwatch",
+                      "version": "v0",
+                      "datasource": {
+                        "name": "P034F075C744B399F"
+                      },
+                      "spec": {
+                        "dimensions": {
+                          "ClusterName": "distributed-llm-ecs-fargate-dev-ollama-cluster",
+                          "ServiceName": "distributed-llm-ecs-fargate-dev-ollama"
+                        },
+                        "label": "Running Tasks",
+                        "metricEditorMode": 0,
+                        "metricName": "RunningTaskCount",
+                        "metricQueryType": 0,
+                        "namespace": "ECS/ContainerInsights",
+                        "queryMode": "Metrics",
+                        "region": "eu-central-1",
+                        "statistic": "Average"
+                      }
+                    },
+                    "refId": "A",
+                    "hidden": false
+                  }
+                }
+              ],
+              "transformations": [],
+              "queryOptions": {}
+            }
+          },
+          "vizConfig": {
+            "kind": "VizConfig",
+            "group": "timeseries",
+            "version": "13.1.3",
+            "spec": {
+              "options": {
+                "annotations": {
+                  "clustering": -1,
+                  "multiLane": false
+                },
+                "legend": {
+                  "calcs": [
+                    "lastNotNull",
+                    "max"
+                  ],
+                  "displayMode": "list",
+                  "enableFacetedFilter": false,
+                  "overflow": "ellipsis",
+                  "placement": "bottom",
+                  "showLegend": true
+                },
+                "tooltip": {
+                  "hideZeros": false,
+                  "mode": "single",
+                  "sort": "none"
+                }
+              },
+              "fieldConfig": {
+                "defaults": {
+                  "unit": "short",
+                  "min": 0,
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "value": 0,
+                        "color": "green"
+                      }
+                    ]
+                  },
+                  "color": {
+                    "mode": "palette-classic"
+                  },
+                  "custom": {
+                    "axisBorderShow": false,
+                    "axisCenteredZero": false,
+                    "axisColorMode": "text",
+                    "axisLabel": "",
+                    "axisPlacement": "auto",
+                    "barAlignment": 0,
+                    "barWidthFactor": 0.6,
+                    "drawStyle": "line",
+                    "fillOpacity": 15,
+                    "gradientMode": "none",
+                    "hideFrom": {
+                      "legend": false,
+                      "tooltip": false,
+                      "viz": false
+                    },
+                    "insertNulls": false,
+                    "lineInterpolation": "stepAfter",
+                    "lineWidth": 2,
                     "pointSize": 5,
                     "scaleDistribution": {
                       "type": "linear"
@@ -293,8 +307,8 @@
         "kind": "Panel",
         "spec": {
           "id": 3,
-          "title": "Ollama Memory (RSS)",
-          "description": "",
+          "title": "Ollama Memory Pressure",
+          "description": "Memory utilization — Ollama loads models into memory, so sustained high memory usage can precede slower responses or OOM restarts.",
           "links": [],
           "data": {
             "kind": "QueryGroup",
@@ -312,15 +326,14 @@
                       },
                       "spec": {
                         "dimensions": {
-                          "AutoScalingGroupName": "distributed-llm-aws-dev-asg",
-                          "exe": "ollama",
-                          "process_name": "ollama_llama_server"
+                          "ClusterName": "distributed-llm-ecs-fargate-dev-ollama-cluster",
+                          "ServiceName": "distributed-llm-ecs-fargate-dev-ollama"
                         },
-                        "label": "",
+                        "label": "Memory Utilization",
                         "metricEditorMode": 0,
-                        "metricName": "procstat_memory_rss",
+                        "metricName": "MemoryUtilization",
                         "metricQueryType": 0,
-                        "namespace": "CWAgent",
+                        "namespace": "AWS/ECS",
                         "queryMode": "Metrics",
                         "region": "eu-central-1",
                         "statistic": "Average"
@@ -370,7 +383,9 @@
               },
               "fieldConfig": {
                 "defaults": {
-                  "unit": "bytes",
+                  "unit": "percent",
+                  "max": 100,
+                  "min": 0,
                   "thresholds": {
                     "mode": "absolute",
                     "steps": [
@@ -379,236 +394,12 @@
                         "color": "green"
                       },
                       {
-                        "value": 3000000000,
+                        "value": 70,
                         "color": "yellow"
                       },
                       {
-                        "value": 5000000000,
+                        "value": 90,
                         "color": "red"
-                      }
-                    ]
-                  },
-                  "color": {
-                    "mode": "thresholds"
-                  }
-                },
-                "overrides": []
-              }
-            }
-          }
-        }
-      },
-      "panel-4": {
-        "kind": "Panel",
-        "spec": {
-          "id": 4,
-          "title": "Ollama Memory Over Time",
-          "description": "",
-          "links": [],
-          "data": {
-            "kind": "QueryGroup",
-            "spec": {
-              "queries": [
-                {
-                  "kind": "PanelQuery",
-                  "spec": {
-                    "query": {
-                      "kind": "DataQuery",
-                      "group": "cloudwatch",
-                      "version": "v0",
-                      "datasource": {
-                        "name": "P034F075C744B399F"
-                      },
-                      "spec": {
-                        "dimensions": {
-                          "AutoScalingGroupName": "distributed-llm-aws-dev-asg",
-                          "exe": "ollama",
-                          "process_name": "ollama_llama_server"
-                        },
-                        "label": "",
-                        "metricEditorMode": 0,
-                        "metricName": "procstat_memory_rss",
-                        "metricQueryType": 0,
-                        "namespace": "CWAgent",
-                        "queryMode": "Metrics",
-                        "region": "eu-central-1",
-                        "statistic": "Average"
-                      }
-                    },
-                    "refId": "A",
-                    "hidden": false
-                  }
-                }
-              ],
-              "transformations": [],
-              "queryOptions": {}
-            }
-          },
-          "vizConfig": {
-            "kind": "VizConfig",
-            "group": "timeseries",
-            "version": "13.1.3",
-            "spec": {
-              "options": {
-                "annotations": {
-                  "clustering": -1,
-                  "multiLane": false
-                },
-                "legend": {
-                  "calcs": [],
-                  "displayMode": "list",
-                  "enableFacetedFilter": false,
-                  "overflow": "ellipsis",
-                  "placement": "bottom",
-                  "showLegend": true
-                },
-                "tooltip": {
-                  "hideZeros": false,
-                  "mode": "single",
-                  "sort": "none"
-                }
-              },
-              "fieldConfig": {
-                "defaults": {
-                  "unit": "bytes",
-                  "thresholds": {
-                    "mode": "absolute",
-                    "steps": [
-                      {
-                        "value": 0,
-                        "color": "green"
-                      },
-                      {
-                        "value": 80,
-                        "color": "red"
-                      }
-                    ]
-                  },
-                  "color": {
-                    "mode": "palette-classic"
-                  },
-                  "custom": {
-                    "axisBorderShow": false,
-                    "axisCenteredZero": false,
-                    "axisColorMode": "text",
-                    "axisLabel": "",
-                    "axisPlacement": "auto",
-                    "barAlignment": 0,
-                    "barWidthFactor": 0.6,
-                    "drawStyle": "line",
-                    "fillOpacity": 0,
-                    "gradientMode": "none",
-                    "hideFrom": {
-                      "legend": false,
-                      "tooltip": false,
-                      "viz": false
-                    },
-                    "insertNulls": false,
-                    "lineInterpolation": "linear",
-                    "lineWidth": 1,
-                    "pointSize": 5,
-                    "scaleDistribution": {
-                      "type": "linear"
-                    },
-                    "showPoints": "auto",
-                    "showValues": false,
-                    "spanNulls": false,
-                    "stacking": {
-                      "group": "A",
-                      "mode": "none"
-                    },
-                    "thresholdsStyle": {
-                      "mode": "off"
-                    }
-                  }
-                },
-                "overrides": []
-              }
-            }
-          }
-        }
-      },
-      "panel-5": {
-        "kind": "Panel",
-        "spec": {
-          "id": 5,
-          "title": "Process Count",
-          "description": "\"Number of ollama-related processes found (2 = both main server + inference runner active; 0 = process down)\"",
-          "links": [],
-          "data": {
-            "kind": "QueryGroup",
-            "spec": {
-              "queries": [
-                {
-                  "kind": "PanelQuery",
-                  "spec": {
-                    "query": {
-                      "kind": "DataQuery",
-                      "group": "cloudwatch",
-                      "version": "v0",
-                      "datasource": {
-                        "name": "P034F075C744B399F"
-                      },
-                      "spec": {
-                        "dimensions": {
-                          "AutoScalingGroupName": "distributed-llm-aws-dev-asg",
-                          "exe": "ollama",
-                          "pid_finder": "native"
-                        },
-                        "label": "",
-                        "metricEditorMode": 0,
-                        "metricName": "procstat_lookup_pid_count",
-                        "metricQueryType": 0,
-                        "namespace": "CWAgent",
-                        "queryMode": "Metrics",
-                        "region": "eu-central-1",
-                        "statistic": "Minimum"
-                      }
-                    },
-                    "refId": "A",
-                    "hidden": false
-                  }
-                }
-              ],
-              "transformations": [],
-              "queryOptions": {}
-            }
-          },
-          "vizConfig": {
-            "kind": "VizConfig",
-            "group": "stat",
-            "version": "13.1.3",
-            "spec": {
-              "options": {
-                "colorMode": "background",
-                "graphMode": "none",
-                "justifyMode": "auto",
-                "orientation": "auto",
-                "percentChangeColorMode": "standard",
-                "reduceOptions": {
-                  "calcs": [
-                    "lastNotNull"
-                  ],
-                  "fields": "",
-                  "values": false
-                },
-                "showPercentChange": false,
-                "textMode": "auto",
-                "wideLayout": true
-              },
-              "fieldConfig": {
-                "defaults": {
-                  "unit": "short",
-                  "thresholds": {
-                    "mode": "absolute",
-                    "steps": [
-                      {
-                        "value": 0,
-                        "color": "red"
-                      },
-                      {
-                        "value": 1,
-                        "color": "green"
                       }
                     ]
                   },
@@ -632,8 +423,8 @@
             "spec": {
               "x": 0,
               "y": 0,
-              "width": 6,
-              "height": 8,
+              "width": 16,
+              "height": 9,
               "element": {
                 "kind": "ElementReference",
                 "name": "panel-1"
@@ -643,23 +434,10 @@
           {
             "kind": "GridLayoutItem",
             "spec": {
-              "x": 6,
+              "x": 16,
               "y": 0,
-              "width": 18,
-              "height": 8,
-              "element": {
-                "kind": "ElementReference",
-                "name": "panel-2"
-              }
-            }
-          },
-          {
-            "kind": "GridLayoutItem",
-            "spec": {
-              "x": 0,
-              "y": 8,
-              "width": 6,
-              "height": 8,
+              "width": 8,
+              "height": 9,
               "element": {
                 "kind": "ElementReference",
                 "name": "panel-3"
@@ -669,26 +447,13 @@
           {
             "kind": "GridLayoutItem",
             "spec": {
-              "x": 6,
-              "y": 8,
-              "width": 18,
+              "x": 0,
+              "y": 9,
+              "width": 24,
               "height": 8,
               "element": {
                 "kind": "ElementReference",
-                "name": "panel-4"
-              }
-            }
-          },
-          {
-            "kind": "GridLayoutItem",
-            "spec": {
-              "x": 0,
-              "y": 16,
-              "width": 24,
-              "height": 4,
-              "element": {
-                "kind": "ElementReference",
-                "name": "panel-5"
+                "name": "panel-2"
               }
             }
           }
@@ -701,7 +466,7 @@
     "tags": [],
     "timeSettings": {
       "timezone": "browser",
-      "from": "now-30m",
+      "from": "now-6h",
       "to": "now",
       "autoRefresh": "",
       "autoRefreshIntervals": [
@@ -719,7 +484,7 @@
       "hideTimepicker": false,
       "fiscalYearStartMonth": 0
     },
-    "title": "LLM Model Usage Dashboard",
+    "title": "LLM Service Performance Dashboard",
     "variables": [],
     "preferences": {
       "layout": {

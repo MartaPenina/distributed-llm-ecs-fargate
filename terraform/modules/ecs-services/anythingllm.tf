@@ -92,6 +92,12 @@ resource "aws_ecs_service" "anythingllm" {
     security_groups = [var.ecs_tasks_sg_id]
   }
 
+  load_balancer {
+    target_group_arn = var.anythingllm_target_group_arn
+    container_name    = "anythingllm"
+    container_port     = 3001
+  }
+
   service_connect_configuration {
     enabled   = true
     namespace = aws_service_discovery_http_namespace.main.arn
@@ -105,5 +111,9 @@ resource "aws_ecs_service" "anythingllm" {
         dns_name = "anythingllm"
       }
     }
+  }
+
+  lifecycle {
+    ignore_changes = [desired_count]
   }
 }

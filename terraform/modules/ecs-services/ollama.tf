@@ -25,7 +25,7 @@ resource "aws_ecs_task_definition" "ollama" {
       
       # health check: Ollama responds on / when ready
       healthCheck = {
-        command     = ["CMD-SHELL", "curl -f http://localhost:11434/ || exit 1"]
+        command     = ["CMD-SHELL", "ollama list || exit 1"]
         interval    = 30
         timeout     = 10
         retries     = 3
@@ -80,6 +80,19 @@ resource "aws_ecs_service" "ollama" {
         dns_name = "ollama"
       }
     }
+  }
+
+  # Registers Ollama tasks with the internal ALB's target group — this is
+  # what actually makes the internal load balancer aware of this task,
+  # same pattern as anythingllm's load_balancer block for the public ALB
+  load_balancer {
+    target_group_arn = var.ollama_target_group_arn
+    container_name    = "ollama"
+    container_port     = 11434
+  }
+
+  lifecycle {
+    ignore_changes = [desired_count]
   }
 
   # named so Service Connect knows which container/port to expose

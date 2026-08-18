@@ -19,3 +19,12 @@ resource "aws_route53_record" "app" {
     evaluate_target_health = true
   }
 }
+
+# A record for Grafana bastion — points at its stable Elastic IP
+resource "aws_route53_record" "grafana" {
+  zone_id = aws_route53_zone.subdomain.zone_id
+  name    = "grafana.ecs.${var.parent_domain}"
+  type    = "A"
+  ttl     = 300
+  records = [var.grafana_public_ip]
+}

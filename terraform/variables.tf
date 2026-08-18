@@ -46,3 +46,23 @@ variable "alert_email" {
   description = "Email address to receive CloudWatch/Grafana alert notifications"
   type        = string
 }
+
+variable "key_pair_name" {
+  description = "EC2 key pair name for SSH access to Grafana bastion"
+  type        = string
+}
+
+variable "grafana_allowed_cidrs" {
+  description = "SoftServe IP ranges + personal IP allowed to access Grafana bastion and ALB"
+  type        = list(string)
+}
+
+variable "grafana_ami_id" {
+  description = "Custom Packer-built AMI ID for the Grafana bastion host"
+  type        = string
+}
+
+variable "parent_domain" {
+  description = "Parent domain registered at NIC.UA"
+  type        = string
+}

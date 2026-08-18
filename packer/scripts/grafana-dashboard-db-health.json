@@ -2,23 +2,20 @@
   "apiVersion": "dashboard.grafana.app/v2",
   "kind": "Dashboard",
   "metadata": {
-    "name": "ad64hcg",
+    "name": "db-health-dash",
     "namespace": "default",
-    "uid": "971c202e-d7fe-4273-b134-19123f0af166",
-    "resourceVersion": "1786348728343995",
-    "generation": 1,
-    "creationTimestamp": "2026-08-10T07:58:48Z",
+    "uid": "8c13bd4e-5eb3-4ea0-878a-4de8c153e7dd",
+    "resourceVersion": "1785932464400987",
+    "generation": 6,
+    "creationTimestamp": "2026-08-05T11:48:10Z",
     "labels": {
-      "grafana.app/deprecatedInternalID": "1557299646365696"
+      "grafana.app/deprecatedInternalID": "4306683342086144"
     },
     "annotations": {
-      "grafana.app/createdBy": "access-policy:service",
-      "grafana.app/managedBy": "classic-file-provisioning",
-      "grafana.app/managerAllowsEdits": "true",
-      "grafana.app/managerId": "default",
-      "grafana.app/sourceChecksum": "0319a77f0265a4dbaf123870f2b8a775",
-      "grafana.app/sourcePath": "/etc/grafana/provisioning/dashboards/host-status.json",
-      "grafana.app/sourceTimestamp": "1786347991000"
+      "grafana.app/createdBy": "user:ffu6aepu29v5sa",
+      "grafana.app/saved-from-ui": "Grafana v13.1.2 (7f247b37a4)",
+      "grafana.app/updatedBy": "user:ffu6aepu29v5sa",
+      "grafana.app/updatedTimestamp": "2026-08-05T12:21:04Z"
     }
   },
   "spec": {
@@ -44,14 +41,14 @@
       }
     ],
     "cursorSync": "Off",
-    "description": "",
+    "description": "PostgreSQL RDS CPU, memory, storage, and connections",
     "editable": true,
     "elements": {
       "panel-1": {
         "kind": "Panel",
         "spec": {
           "id": 1,
-          "title": "CPU Usage",
+          "title": "RDS CPU Utilization",
           "description": "",
           "links": [],
           "data": {
@@ -63,16 +60,23 @@
                   "spec": {
                     "query": {
                       "kind": "DataQuery",
-                      "group": "prometheus",
+                      "group": "cloudwatch",
                       "version": "v0",
                       "datasource": {
-                        "name": "PBFA97CFB590B2093"
+                        "name": "P034F075C744B399F"
                       },
                       "spec": {
-                        "editorMode": "code",
-                        "expr": "100 - (avg by (instance) (rate(node_cpu_seconds_total{mode=\"idle\"}[5m])) * 100)",
-                        "legendFormat": "__auto",
-                        "range": true
+                        "dimensions": {
+                          "DBInstanceIdentifier": "distributed-llm-ecs-fargate-dev-postgres"
+                        },
+                        "label": "",
+                        "metricEditorMode": 0,
+                        "metricName": "CPUUtilization",
+                        "metricQueryType": 0,
+                        "namespace": "AWS/RDS",
+                        "queryMode": "Metrics",
+                        "region": "eu-central-1",
+                        "statistic": "Average"
                       }
                     },
                     "refId": "A",
@@ -87,11 +91,11 @@
           "vizConfig": {
             "kind": "VizConfig",
             "group": "gauge",
-            "version": "13.1.1",
+            "version": "13.1.2",
             "spec": {
               "options": {
                 "barShape": "flat",
-                "barWidthFactor": 0.53,
+                "barWidthFactor": 0.5,
                 "effects": {
                   "barGlow": false,
                   "centerGlow": false,
@@ -119,13 +123,17 @@
               },
               "fieldConfig": {
                 "defaults": {
-                  "unit": "percentunit",
+                  "unit": "percent",
                   "thresholds": {
                     "mode": "absolute",
                     "steps": [
                       {
                         "value": 0,
                         "color": "green"
+                      },
+                      {
+                        "value": 60,
+                        "color": "yellow"
                       },
                       {
                         "value": 80,
@@ -147,7 +155,7 @@
         "kind": "Panel",
         "spec": {
           "id": 2,
-          "title": "Memory Usage",
+          "title": "RDS CPU Over Time",
           "description": "",
           "links": [],
           "data": {
@@ -159,16 +167,23 @@
                   "spec": {
                     "query": {
                       "kind": "DataQuery",
-                      "group": "prometheus",
+                      "group": "cloudwatch",
                       "version": "v0",
                       "datasource": {
-                        "name": "PBFA97CFB590B2093"
+                        "name": "P034F075C744B399F"
                       },
                       "spec": {
-                        "editorMode": "code",
-                        "expr": "(node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes) * 100",
-                        "legendFormat": "__auto",
-                        "range": true
+                        "dimensions": {
+                          "DBInstanceIdentifier": "distributed-llm-ecs-fargate-dev-postgres"
+                        },
+                        "label": "",
+                        "metricEditorMode": 0,
+                        "metricName": "CPUUtilization",
+                        "metricQueryType": 0,
+                        "namespace": "AWS/RDS",
+                        "queryMode": "Metrics",
+                        "region": "eu-central-1",
+                        "statistic": "Average"
                       }
                     },
                     "refId": "A",
@@ -182,36 +197,27 @@
           },
           "vizConfig": {
             "kind": "VizConfig",
-            "group": "gauge",
-            "version": "13.1.1",
+            "group": "timeseries",
+            "version": "13.1.2",
             "spec": {
               "options": {
-                "barShape": "flat",
-                "barWidthFactor": 0.5,
-                "effects": {
-                  "barGlow": false,
-                  "centerGlow": false,
-                  "gradient": true
+                "annotations": {
+                  "clustering": -1,
+                  "multiLane": false
                 },
-                "endpointMarker": "point",
-                "minVizHeight": 75,
-                "minVizWidth": 75,
-                "orientation": "auto",
-                "reduceOptions": {
-                  "calcs": [
-                    "lastNotNull"
-                  ],
-                  "fields": "",
-                  "values": false
+                "legend": {
+                  "calcs": [],
+                  "displayMode": "list",
+                  "enableFacetedFilter": false,
+                  "overflow": "ellipsis",
+                  "placement": "bottom",
+                  "showLegend": true
                 },
-                "segmentCount": 1,
-                "segmentSpacing": 0.3,
-                "shape": "gauge",
-                "showThresholdLabels": false,
-                "showThresholdMarkers": true,
-                "sizing": "auto",
-                "sparkline": true,
-                "textMode": "auto"
+                "tooltip": {
+                  "hideZeros": false,
+                  "mode": "single",
+                  "sort": "none"
+                }
               },
               "fieldConfig": {
                 "defaults": {
@@ -230,7 +236,41 @@
                     ]
                   },
                   "color": {
-                    "mode": "thresholds"
+                    "mode": "palette-classic"
+                  },
+                  "custom": {
+                    "axisBorderShow": false,
+                    "axisCenteredZero": false,
+                    "axisColorMode": "text",
+                    "axisLabel": "",
+                    "axisPlacement": "auto",
+                    "barAlignment": 0,
+                    "barWidthFactor": 0.6,
+                    "drawStyle": "line",
+                    "fillOpacity": 0,
+                    "gradientMode": "none",
+                    "hideFrom": {
+                      "legend": false,
+                      "tooltip": false,
+                      "viz": false
+                    },
+                    "insertNulls": false,
+                    "lineInterpolation": "linear",
+                    "lineWidth": 1,
+                    "pointSize": 5,
+                    "scaleDistribution": {
+                      "type": "linear"
+                    },
+                    "showPoints": "auto",
+                    "showValues": false,
+                    "spanNulls": false,
+                    "stacking": {
+                      "group": "A",
+                      "mode": "none"
+                    },
+                    "thresholdsStyle": {
+                      "mode": "off"
+                    }
                   }
                 },
                 "overrides": []
@@ -243,7 +283,7 @@
         "kind": "Panel",
         "spec": {
           "id": 3,
-          "title": "Disk Usage",
+          "title": "Freeable Memory",
           "description": "",
           "links": [],
           "data": {
@@ -255,16 +295,23 @@
                   "spec": {
                     "query": {
                       "kind": "DataQuery",
-                      "group": "prometheus",
+                      "group": "cloudwatch",
                       "version": "v0",
                       "datasource": {
-                        "name": "PBFA97CFB590B2093"
+                        "name": "P034F075C744B399F"
                       },
                       "spec": {
-                        "editorMode": "code",
-                        "expr": "(node_filesystem_avail_bytes{mountpoint=\"/\"} / node_filesystem_size_bytes{mountpoint=\"/\"}) * 100",
-                        "legendFormat": "__auto",
-                        "range": true
+                        "dimensions": {
+                          "DBInstanceIdentifier": "distributed-llm-ecs-fargate-dev-postgres"
+                        },
+                        "label": "",
+                        "metricEditorMode": 0,
+                        "metricName": "FreeableMemory",
+                        "metricQueryType": 0,
+                        "namespace": "AWS/RDS",
+                        "queryMode": "Metrics",
+                        "region": "eu-central-1",
+                        "statistic": "Average"
                       }
                     },
                     "refId": "A",
@@ -279,7 +326,7 @@
           "vizConfig": {
             "kind": "VizConfig",
             "group": "gauge",
-            "version": "13.1.1",
+            "version": "13.1.2",
             "spec": {
               "options": {
                 "barShape": "flat",
@@ -311,17 +358,21 @@
               },
               "fieldConfig": {
                 "defaults": {
-                  "unit": "percent",
+                  "unit": "bytes",
                   "thresholds": {
                     "mode": "absolute",
                     "steps": [
                       {
                         "value": 0,
-                        "color": "green"
+                        "color": "red"
                       },
                       {
-                        "value": 80,
-                        "color": "red"
+                        "value": 200000000,
+                        "color": "yellow"
+                      },
+                      {
+                        "value": 500000000,
+                        "color": "green"
                       }
                     ]
                   },
@@ -339,7 +390,7 @@
         "kind": "Panel",
         "spec": {
           "id": 4,
-          "title": "CPU Usage",
+          "title": "Free Storage Space",
           "description": "",
           "links": [],
           "data": {
@@ -351,16 +402,23 @@
                   "spec": {
                     "query": {
                       "kind": "DataQuery",
-                      "group": "prometheus",
+                      "group": "cloudwatch",
                       "version": "v0",
                       "datasource": {
-                        "name": "PBFA97CFB590B2093"
+                        "name": "P034F075C744B399F"
                       },
                       "spec": {
-                        "editorMode": "code",
-                        "expr": "100 - (avg by (instance) (rate(node_cpu_seconds_total{mode=\"idle\"}[5m])) * 100)",
-                        "legendFormat": "__auto",
-                        "range": true
+                        "dimensions": {
+                          "DBInstanceIdentifier": "distributed-llm-ecs-fargate-dev-postgres"
+                        },
+                        "label": "",
+                        "metricEditorMode": 0,
+                        "metricName": "FreeStorageSpace",
+                        "metricQueryType": 0,
+                        "namespace": "AWS/RDS",
+                        "queryMode": "Metrics",
+                        "region": "eu-central-1",
+                        "statistic": "Average"
                       }
                     },
                     "refId": "A",
@@ -374,80 +432,59 @@
           },
           "vizConfig": {
             "kind": "VizConfig",
-            "group": "timeseries",
-            "version": "13.1.1",
+            "group": "gauge",
+            "version": "13.1.2",
             "spec": {
               "options": {
-                "annotations": {
-                  "clustering": -1,
-                  "multiLane": false
+                "barShape": "flat",
+                "barWidthFactor": 0.5,
+                "effects": {
+                  "barGlow": false,
+                  "centerGlow": false,
+                  "gradient": true
                 },
-                "legend": {
-                  "calcs": [],
-                  "displayMode": "list",
-                  "enableFacetedFilter": false,
-                  "overflow": "ellipsis",
-                  "placement": "bottom",
-                  "showLegend": true
+                "endpointMarker": "point",
+                "minVizHeight": 75,
+                "minVizWidth": 75,
+                "orientation": "auto",
+                "reduceOptions": {
+                  "calcs": [
+                    "lastNotNull"
+                  ],
+                  "fields": "",
+                  "values": false
                 },
-                "tooltip": {
-                  "hideZeros": false,
-                  "mode": "single",
-                  "sort": "none"
-                }
+                "segmentCount": 1,
+                "segmentSpacing": 0.3,
+                "shape": "gauge",
+                "showThresholdLabels": false,
+                "showThresholdMarkers": true,
+                "sizing": "auto",
+                "sparkline": true,
+                "textMode": "auto"
               },
               "fieldConfig": {
                 "defaults": {
-                  "unit": "percentunit",
+                  "unit": "bytes",
                   "thresholds": {
                     "mode": "absolute",
                     "steps": [
                       {
                         "value": 0,
-                        "color": "green"
+                        "color": "red"
                       },
                       {
-                        "value": 80,
-                        "color": "red"
+                        "value": 2000000000,
+                        "color": "yellow"
+                      },
+                      {
+                        "value": 5000000000,
+                        "color": "green"
                       }
                     ]
                   },
                   "color": {
-                    "mode": "palette-classic"
-                  },
-                  "custom": {
-                    "axisBorderShow": false,
-                    "axisCenteredZero": false,
-                    "axisColorMode": "text",
-                    "axisLabel": "",
-                    "axisPlacement": "auto",
-                    "barAlignment": 0,
-                    "barWidthFactor": 0.6,
-                    "drawStyle": "line",
-                    "fillOpacity": 0,
-                    "gradientMode": "none",
-                    "hideFrom": {
-                      "legend": false,
-                      "tooltip": false,
-                      "viz": false
-                    },
-                    "insertNulls": false,
-                    "lineInterpolation": "linear",
-                    "lineWidth": 1,
-                    "pointSize": 5,
-                    "scaleDistribution": {
-                      "type": "linear"
-                    },
-                    "showPoints": "auto",
-                    "showValues": false,
-                    "spanNulls": false,
-                    "stacking": {
-                      "group": "A",
-                      "mode": "none"
-                    },
-                    "thresholdsStyle": {
-                      "mode": "off"
-                    }
+                    "mode": "thresholds"
                   }
                 },
                 "overrides": []
@@ -460,7 +497,7 @@
         "kind": "Panel",
         "spec": {
           "id": 5,
-          "title": "Memory Usage",
+          "title": "Database Connections",
           "description": "",
           "links": [],
           "data": {
@@ -472,16 +509,23 @@
                   "spec": {
                     "query": {
                       "kind": "DataQuery",
-                      "group": "prometheus",
+                      "group": "cloudwatch",
                       "version": "v0",
                       "datasource": {
-                        "name": "PBFA97CFB590B2093"
+                        "name": "P034F075C744B399F"
                       },
                       "spec": {
-                        "editorMode": "code",
-                        "expr": "(node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes) * 100",
-                        "legendFormat": "__auto",
-                        "range": true
+                        "dimensions": {
+                          "DBInstanceIdentifier": "distributed-llm-ecs-fargate-dev-postgres"
+                        },
+                        "label": "",
+                        "metricEditorMode": 0,
+                        "metricName": "DatabaseConnections",
+                        "metricQueryType": 0,
+                        "namespace": "AWS/RDS",
+                        "queryMode": "Metrics",
+                        "region": "eu-central-1",
+                        "statistic": "Average"
                       }
                     },
                     "refId": "A",
@@ -496,7 +540,7 @@
           "vizConfig": {
             "kind": "VizConfig",
             "group": "timeseries",
-            "version": "13.1.1",
+            "version": "13.1.2",
             "spec": {
               "options": {
                 "annotations": {
@@ -519,249 +563,7 @@
               },
               "fieldConfig": {
                 "defaults": {
-                  "unit": "percent",
-                  "thresholds": {
-                    "mode": "absolute",
-                    "steps": [
-                      {
-                        "value": 0,
-                        "color": "green"
-                      },
-                      {
-                        "value": 80,
-                        "color": "red"
-                      }
-                    ]
-                  },
-                  "color": {
-                    "mode": "palette-classic"
-                  },
-                  "custom": {
-                    "axisBorderShow": false,
-                    "axisCenteredZero": false,
-                    "axisColorMode": "text",
-                    "axisLabel": "",
-                    "axisPlacement": "auto",
-                    "barAlignment": 0,
-                    "barWidthFactor": 0.6,
-                    "drawStyle": "line",
-                    "fillOpacity": 0,
-                    "gradientMode": "none",
-                    "hideFrom": {
-                      "legend": false,
-                      "tooltip": false,
-                      "viz": false
-                    },
-                    "insertNulls": false,
-                    "lineInterpolation": "linear",
-                    "lineWidth": 1,
-                    "pointSize": 5,
-                    "scaleDistribution": {
-                      "type": "linear"
-                    },
-                    "showPoints": "auto",
-                    "showValues": false,
-                    "spanNulls": false,
-                    "stacking": {
-                      "group": "A",
-                      "mode": "none"
-                    },
-                    "thresholdsStyle": {
-                      "mode": "off"
-                    }
-                  }
-                },
-                "overrides": []
-              }
-            }
-          }
-        }
-      },
-      "panel-6": {
-        "kind": "Panel",
-        "spec": {
-          "id": 6,
-          "title": "Disk Usage",
-          "description": "",
-          "links": [],
-          "data": {
-            "kind": "QueryGroup",
-            "spec": {
-              "queries": [
-                {
-                  "kind": "PanelQuery",
-                  "spec": {
-                    "query": {
-                      "kind": "DataQuery",
-                      "group": "prometheus",
-                      "version": "v0",
-                      "datasource": {
-                        "name": "PBFA97CFB590B2093"
-                      },
-                      "spec": {
-                        "editorMode": "code",
-                        "expr": "(node_filesystem_avail_bytes{mountpoint=\"/\"} / node_filesystem_size_bytes{mountpoint=\"/\"}) * 100",
-                        "legendFormat": "__auto",
-                        "range": true
-                      }
-                    },
-                    "refId": "A",
-                    "hidden": false
-                  }
-                }
-              ],
-              "transformations": [],
-              "queryOptions": {}
-            }
-          },
-          "vizConfig": {
-            "kind": "VizConfig",
-            "group": "timeseries",
-            "version": "13.1.1",
-            "spec": {
-              "options": {
-                "annotations": {
-                  "clustering": -1,
-                  "multiLane": false
-                },
-                "legend": {
-                  "calcs": [],
-                  "displayMode": "list",
-                  "enableFacetedFilter": false,
-                  "overflow": "ellipsis",
-                  "placement": "bottom",
-                  "showLegend": true
-                },
-                "tooltip": {
-                  "hideZeros": false,
-                  "mode": "single",
-                  "sort": "none"
-                }
-              },
-              "fieldConfig": {
-                "defaults": {
-                  "unit": "percent",
-                  "thresholds": {
-                    "mode": "absolute",
-                    "steps": [
-                      {
-                        "value": 0,
-                        "color": "green"
-                      },
-                      {
-                        "value": 80,
-                        "color": "red"
-                      }
-                    ]
-                  },
-                  "color": {
-                    "mode": "palette-classic"
-                  },
-                  "custom": {
-                    "axisBorderShow": false,
-                    "axisCenteredZero": false,
-                    "axisColorMode": "text",
-                    "axisLabel": "",
-                    "axisPlacement": "auto",
-                    "barAlignment": 0,
-                    "barWidthFactor": 0.6,
-                    "drawStyle": "line",
-                    "fillOpacity": 0,
-                    "gradientMode": "none",
-                    "hideFrom": {
-                      "legend": false,
-                      "tooltip": false,
-                      "viz": false
-                    },
-                    "insertNulls": false,
-                    "lineInterpolation": "linear",
-                    "lineWidth": 1,
-                    "pointSize": 5,
-                    "scaleDistribution": {
-                      "type": "linear"
-                    },
-                    "showPoints": "auto",
-                    "showValues": false,
-                    "spanNulls": false,
-                    "stacking": {
-                      "group": "A",
-                      "mode": "none"
-                    },
-                    "thresholdsStyle": {
-                      "mode": "off"
-                    }
-                  }
-                },
-                "overrides": []
-              }
-            }
-          }
-        }
-      },
-      "panel-7": {
-        "kind": "Panel",
-        "spec": {
-          "id": 7,
-          "title": "Network",
-          "description": "",
-          "links": [],
-          "data": {
-            "kind": "QueryGroup",
-            "spec": {
-              "queries": [
-                {
-                  "kind": "PanelQuery",
-                  "spec": {
-                    "query": {
-                      "kind": "DataQuery",
-                      "group": "prometheus",
-                      "version": "v0",
-                      "datasource": {
-                        "name": "PBFA97CFB590B2093"
-                      },
-                      "spec": {
-                        "editorMode": "code",
-                        "expr": "rate(node_network_receive_bytes_total{device=\"enp39s0\"}[5m])",
-                        "legendFormat": "__auto",
-                        "range": true
-                      }
-                    },
-                    "refId": "A",
-                    "hidden": false
-                  }
-                }
-              ],
-              "transformations": [],
-              "queryOptions": {}
-            }
-          },
-          "vizConfig": {
-            "kind": "VizConfig",
-            "group": "timeseries",
-            "version": "13.1.1",
-            "spec": {
-              "options": {
-                "annotations": {
-                  "clustering": -1,
-                  "multiLane": false
-                },
-                "legend": {
-                  "calcs": [],
-                  "displayMode": "list",
-                  "enableFacetedFilter": false,
-                  "overflow": "ellipsis",
-                  "placement": "bottom",
-                  "showLegend": true
-                },
-                "tooltip": {
-                  "hideZeros": false,
-                  "mode": "single",
-                  "sort": "none"
-                }
-              },
-              "fieldConfig": {
-                "defaults": {
-                  "unit": "Bps",
+                  "unit": "short",
                   "thresholds": {
                     "mode": "absolute",
                     "steps": [
@@ -829,7 +631,7 @@
             "spec": {
               "x": 0,
               "y": 0,
-              "width": 12,
+              "width": 6,
               "height": 8,
               "element": {
                 "kind": "ElementReference",
@@ -840,13 +642,13 @@
           {
             "kind": "GridLayoutItem",
             "spec": {
-              "x": 12,
+              "x": 6,
               "y": 0,
-              "width": 12,
+              "width": 18,
               "height": 8,
               "element": {
                 "kind": "ElementReference",
-                "name": "panel-4"
+                "name": "panel-2"
               }
             }
           },
@@ -855,11 +657,24 @@
             "spec": {
               "x": 0,
               "y": 8,
-              "width": 12,
+              "width": 6,
               "height": 8,
               "element": {
                 "kind": "ElementReference",
-                "name": "panel-2"
+                "name": "panel-3"
+              }
+            }
+          },
+          {
+            "kind": "GridLayoutItem",
+            "spec": {
+              "x": 6,
+              "y": 8,
+              "width": 6,
+              "height": 8,
+              "element": {
+                "kind": "ElementReference",
+                "name": "panel-4"
               }
             }
           },
@@ -875,45 +690,6 @@
                 "name": "panel-5"
               }
             }
-          },
-          {
-            "kind": "GridLayoutItem",
-            "spec": {
-              "x": 0,
-              "y": 16,
-              "width": 12,
-              "height": 8,
-              "element": {
-                "kind": "ElementReference",
-                "name": "panel-3"
-              }
-            }
-          },
-          {
-            "kind": "GridLayoutItem",
-            "spec": {
-              "x": 12,
-              "y": 16,
-              "width": 12,
-              "height": 8,
-              "element": {
-                "kind": "ElementReference",
-                "name": "panel-6"
-              }
-            }
-          },
-          {
-            "kind": "GridLayoutItem",
-            "spec": {
-              "x": 0,
-              "y": 24,
-              "width": 24,
-              "height": 9,
-              "element": {
-                "kind": "ElementReference",
-                "name": "panel-7"
-              }
-            }
           }
         ]
       }
@@ -924,7 +700,7 @@
     "tags": [],
     "timeSettings": {
       "timezone": "browser",
-      "from": "now-30m",
+      "from": "now-1h",
       "to": "now",
       "autoRefresh": "",
       "autoRefreshIntervals": [
@@ -942,7 +718,7 @@
       "hideTimepicker": false,
       "fiscalYearStartMonth": 0
     },
-    "title": "Host Status Dashboard",
+    "title": "Database Performance Dashboard",
     "variables": [],
     "preferences": {
       "layout": {
