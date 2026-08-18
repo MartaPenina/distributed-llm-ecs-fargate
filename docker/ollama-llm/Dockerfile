@@ -21,3 +21,4 @@ RUN ollama serve & \
 
 ENV OLLAMA_HOST=0.0.0.0
 CMD ["ollama", "serve"]# trigger test
+# retry after IAM fix
