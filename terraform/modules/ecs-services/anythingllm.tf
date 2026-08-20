@@ -46,7 +46,9 @@ resource "aws_ecs_task_definition" "anythingllm" {
       secrets = [
         { name = "DATABASE_URL",  valueFrom = "/distributed-llm-ecs-fargate/dev/database_url" },
         { name = "AUTH_TOKEN",     valueFrom = "/distributed-llm-ecs-fargate/dev/anythingllm_password" },
-        { name = "JWT_SECRET",     valueFrom = "/distributed-llm-ecs-fargate/dev/anythingllm_jwt_secret" }
+        { name = "JWT_SECRET",     valueFrom = "/distributed-llm-ecs-fargate/dev/anythingllm_jwt_secret" },
+        { name = "SIG_KEY",  valueFrom = "/distributed-llm-ecs-fargate/dev/anythingllm_sig_key" },
+        { name = "SIG_SALT", valueFrom = "/distributed-llm-ecs-fargate/dev/anythingllm_sig_salt" }
       ]
 
       environment = [
@@ -113,7 +115,4 @@ resource "aws_ecs_service" "anythingllm" {
     }
   }
 
-  lifecycle {
-    ignore_changes = [desired_count]
-  }
 }

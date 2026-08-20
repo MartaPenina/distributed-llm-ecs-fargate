@@ -12,7 +12,7 @@ resource "aws_ecs_task_definition" "ollama" {
   container_definitions = jsonencode([
     {
       name      = "ollama"
-      image     = "${var.ecr_repository_url}:v6"
+      image     = "${var.ecr_repository_url}:v7"
       essential = true
 
       portMappings = [
@@ -57,7 +57,7 @@ resource "aws_ecs_service" "ollama" {
   name            = "${var.project_name}-${var.environment}-ollama"
   cluster = var.ollama_cluster_id
   task_definition = aws_ecs_task_definition.ollama.arn
-  desired_count   = 1
+  desired_count   = 2
   launch_type     = "FARGATE"
 
   network_configuration {
@@ -91,9 +91,6 @@ resource "aws_ecs_service" "ollama" {
     container_port     = 11434
   }
 
-  lifecycle {
-    ignore_changes = [desired_count]
-  }
 
   # named so Service Connect knows which container/port to expose
   # (must match a portMapping name in the task definition — will add below)
