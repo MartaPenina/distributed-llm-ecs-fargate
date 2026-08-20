@@ -5,7 +5,7 @@ resource "aws_ecs_cluster" "ollama" {
 
   setting {
     name  = "containerInsights"
-    value = "enabled"
+    value = "enhanced"
   }
 
   tags = { Name = "${var.project_name}-${var.environment}-ollama-cluster" }
@@ -26,7 +26,7 @@ resource "aws_ecs_cluster" "anythingllm" {
 
   setting {
     name  = "containerInsights"
-    value = "enabled"
+    value = "enhanced"
   }
 
   tags = { Name = "${var.project_name}-${var.environment}-anythingllm-cluster" }
