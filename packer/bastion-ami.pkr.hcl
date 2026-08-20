@@ -59,6 +59,11 @@ build {
   }
 
   provisioner "file" {
+    source      = "${path.root}/scripts/grafana-dashboard-all-services.json"
+    destination = "/tmp/grafana-dashboard-all-services.json"
+  }
+
+  provisioner "file" {
     source      = "${path.root}/scripts/grafana-dashboard-db-health.json"
     destination = "/tmp/grafana-dashboard-db-health.json"
   }

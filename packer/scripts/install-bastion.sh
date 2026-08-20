@@ -71,10 +71,12 @@ sudo cp /tmp/grafana-datasource-cloudwatch.yaml /etc/grafana-provisioning/dataso
 echo "Setting up Grafana dashboard provisioning..."
 sudo mkdir -p /etc/grafana-provisioning/dashboards
 sudo cp /tmp/grafana-dashboard-provider.yaml /etc/grafana-provisioning/dashboards/provider.yaml
+sudo cp /tmp/grafana-dashboard-all-services.json /etc/grafana-provisioning/dashboards/all-services.json
 sudo cp /tmp/grafana-dashboard-db-health.json /etc/grafana-provisioning/dashboards/db-health.json
 sudo cp /tmp/grafana-dashboard-web-service-usage.json /etc/grafana-provisioning/dashboards/web-service-usage.json
 sudo cp /tmp/grafana-dashboard-container-health.json /etc/grafana-provisioning/dashboards/container-health.json
 sudo cp /tmp/grafana-dashboard-llm-service-performance.json /etc/grafana-provisioning/dashboards/llm-service-performance.json
+
 
 echo "Setting up Grafana alerting provisioning..."
 sudo mkdir -p /etc/grafana-provisioning/alerting

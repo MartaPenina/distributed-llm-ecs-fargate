@@ -78,7 +78,7 @@ resource "aws_iam_instance_profile" "grafana" {
 # ── EC2 Instance — runs Grafana via systemd service baked into the Packer AMI ──
 resource "aws_instance" "grafana" {
   ami                    = var.ami_id
-  instance_type          = "t3.micro"
+  instance_type          = "t3.small"
   subnet_id              = var.public_subnet_id
   vpc_security_group_ids = [aws_security_group.grafana_bastion.id]
   iam_instance_profile   = aws_iam_instance_profile.grafana.name
