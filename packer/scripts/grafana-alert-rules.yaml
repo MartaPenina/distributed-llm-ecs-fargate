@@ -1,28 +1,67 @@
 apiVersion: 1
 groups:
     - orgId: 1
-      name: llm-alerts-1m
-      folder: llm-alerts
+      name: ecs-resource-alerts
+      folder: grafana-alert-rules
       interval: 1m
       rules:
-        - uid: ffucp24zf12wwb
-          title: llm-test-ec2-high-memory-grafana
+        - uid: afvqkdncwthxcb
+          title: ollama-high-cpu
           condition: C
           data:
             - refId: A
               relativeTimeRange:
                 from: 600
                 to: 0
-              datasourceUid: PBFA97CFB590B2093
+              datasourceUid: P034F075C744B399F
               model:
-                editorMode: code
-                expr: (1 - (node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes)) * 100
-                instant: true
+                dimensions:
+                    ClusterName: distributed-llm-ecs-fargate-dev-ollama-cluster
+                    ServiceName: distributed-llm-ecs-fargate-dev-ollama
+                    TaskId: '*'
+                expression: ""
+                id: ""
                 intervalMs: 1000
-                legendFormat: __auto
+                label: ""
+                logGroups: []
+                matchExact: false
                 maxDataPoints: 43200
-                range: false
+                metricEditorMode: 0
+                metricName: CpuUtilized
+                metricQueryType: 0
+                namespace: ECS/ContainerInsights
+                period: ""
+                queryLanguage: CWLI
+                queryMode: Metrics
                 refId: A
+                region: eu-central-1
+                sqlExpression: ""
+                statistic: Average
+            - refId: B
+              queryType: expression
+              datasourceUid: __expr__
+              model:
+                conditions:
+                    - evaluator:
+                        params: []
+                        type: gt
+                      operator:
+                        type: and
+                      query:
+                        params: []
+                      reducer:
+                        params: []
+                        type: last
+                      type: query
+                datasource:
+                    type: __expr__
+                    uid: __expr__
+                expression: A
+                intervalMs: 1000
+                maxDataPoints: 43200
+                reducer: last
+                refId: B
+                type: reduce
             - refId: C
               queryType: expression
               datasourceUid: __expr__
@@ -30,7 +69,7 @@ groups:
                 conditions:
                     - evaluator:
                         params:
-                            - 25
+                            - 85
                         type: gt
                       operator:
                         type: and
@@ -44,16 +83,526 @@ groups:
                 datasource:
                     type: __expr__
                     uid: __expr__
+                expression: D
+                intervalMs: 1000
+                maxDataPoints: 43200
+                refId: C
+                type: threshold
+            - refId: D
+              datasourceUid: __expr__
+              model:
+                conditions:
+                    - evaluator:
+                        params:
+                            - 0
+                            - 0
+                        type: gt
+                      operator:
+                        type: and
+                      query:
+                        params: []
+                      reducer:
+                        params: []
+                        type: avg
+                      type: query
+                datasource:
+                    name: Expression
+                    type: __expr__
+                    uid: __expr__
+                expression: $B / 8192 * 100
+                hide: false
+                intervalMs: 1000
+                maxDataPoints: 43200
+                refId: D
+                type: math
+          noDataState: NoData
+          execErrState: Error
+          for: 3m
+          annotations:
+            summary: Ollama task CPU > 85% for 3min
+          isPaused: false
+          notification_settings:
+            receiver: discord-alerts
+        - uid: afvqktvnk9tz4e
+          title: anythingllm-high-cpu
+          condition: C
+          data:
+            - refId: A
+              relativeTimeRange:
+                from: 600
+                to: 0
+              datasourceUid: P034F075C744B399F
+              model:
+                dimensions:
+                    ClusterName: distributed-llm-ecs-fargate-dev-anythingllm-cluster
+                    ServiceName: distributed-llm-ecs-fargate-dev-anythingllm
+                    TaskId: '*'
+                expression: ""
+                id: ""
+                intervalMs: 1000
+                label: ""
+                logGroups: []
+                matchExact: false
+                maxDataPoints: 43200
+                metricEditorMode: 0
+                metricName: CpuUtilized
+                metricQueryType: 0
+                namespace: ECS/ContainerInsights
+                period: ""
+                queryLanguage: CWLI
+                queryMode: Metrics
+                refId: A
+                region: eu-central-1
+                sqlExpression: ""
+                statistic: Average
+            - refId: B
+              queryType: expression
+              datasourceUid: __expr__
+              model:
+                conditions:
+                    - evaluator:
+                        params: []
+                        type: gt
+                      operator:
+                        type: and
+                      query:
+                        params: []
+                      reducer:
+                        params: []
+                        type: last
+                      type: query
+                datasource:
+                    type: __expr__
+                    uid: __expr__
                 expression: A
+                intervalMs: 1000
+                maxDataPoints: 43200
+                reducer: last
+                refId: B
+                type: reduce
+            - refId: C
+              queryType: expression
+              datasourceUid: __expr__
+              model:
+                conditions:
+                    - evaluator:
+                        params:
+                            - 85
+                        type: gt
+                      operator:
+                        type: and
+                      query:
+                        params:
+                            - C
+                      reducer:
+                        params: []
+                        type: last
+                      type: query
+                datasource:
+                    type: __expr__
+                    uid: __expr__
+                expression: D
+                intervalMs: 1000
+                maxDataPoints: 43200
+                refId: C
+                type: threshold
+            - refId: D
+              datasourceUid: __expr__
+              model:
+                conditions:
+                    - evaluator:
+                        params:
+                            - 0
+                            - 0
+                        type: gt
+                      operator:
+                        type: and
+                      query:
+                        params: []
+                      reducer:
+                        params: []
+                        type: avg
+                      type: query
+                datasource:
+                    name: Expression
+                    type: __expr__
+                    uid: __expr__
+                expression: $B / 2048 * 100
+                intervalMs: 1000
+                maxDataPoints: 43200
+                refId: D
+                type: math
+          noDataState: NoData
+          execErrState: Error
+          for: 3m
+          annotations:
+            summary: AnythingLLM task CPU > 85% for 3min
+          isPaused: false
+          notification_settings:
+            receiver: discord-alerts
+        - uid: bfvqljgrwbp4we
+          title: ollama-high-memory
+          condition: C
+          data:
+            - refId: A
+              relativeTimeRange:
+                from: 600
+                to: 0
+              datasourceUid: P034F075C744B399F
+              model:
+                dimensions:
+                    ClusterName: distributed-llm-ecs-fargate-dev-ollama-cluster
+                    ServiceName: distributed-llm-ecs-fargate-dev-ollama
+                    TaskId: '*'
+                expression: ""
+                id: ""
+                intervalMs: 1000
+                label: ""
+                logGroups: []
+                matchExact: false
+                maxDataPoints: 43200
+                metricEditorMode: 0
+                metricName: MemoryUtilized
+                metricQueryType: 0
+                namespace: ECS/ContainerInsights
+                period: ""
+                queryLanguage: CWLI
+                queryMode: Metrics
+                refId: A
+                region: eu-central-1
+                sqlExpression: ""
+                statistic: Average
+            - refId: B
+              queryType: expression
+              datasourceUid: __expr__
+              model:
+                conditions:
+                    - evaluator:
+                        params: []
+                        type: gt
+                      operator:
+                        type: and
+                      query:
+                        params: []
+                      reducer:
+                        params: []
+                        type: last
+                      type: query
+                datasource:
+                    type: __expr__
+                    uid: __expr__
+                expression: A
+                intervalMs: 1000
+                maxDataPoints: 43200
+                reducer: last
+                refId: B
+                type: reduce
+            - refId: C
+              queryType: expression
+              datasourceUid: __expr__
+              model:
+                conditions:
+                    - evaluator:
+                        params:
+                            - 14000
+                        type: gt
+                      operator:
+                        type: and
+                      query:
+                        params:
+                            - C
+                      reducer:
+                        params: []
+                        type: last
+                      type: query
+                datasource:
+                    type: __expr__
+                    uid: __expr__
+                expression: B
                 intervalMs: 1000
                 maxDataPoints: 43200
                 refId: C
                 type: threshold
           noDataState: NoData
           execErrState: Error
-          for: 1m
+          for: 3m
           annotations:
-            summary: Memory usage is above 25% on {{ $labels.instance }}
+            summary: Ollama task RAM > 14000 MB for 3min
+          isPaused: false
+          notification_settings:
+            receiver: discord-alerts
+        - uid: dfvqlr73hj8qoc
+          title: anythingllm-high-memory
+          condition: C
+          data:
+            - refId: A
+              relativeTimeRange:
+                from: 600
+                to: 0
+              datasourceUid: P034F075C744B399F
+              model:
+                dimensions:
+                    ClusterName: distributed-llm-ecs-fargate-dev-anythingllm-cluster
+                    ServiceName: distributed-llm-ecs-fargate-dev-anythingllm
+                    TaskId: '*'
+                expression: ""
+                id: ""
+                intervalMs: 1000
+                label: ""
+                logGroups: []
+                matchExact: false
+                maxDataPoints: 43200
+                metricEditorMode: 0
+                metricName: MemoryUtilized
+                metricQueryType: 0
+                namespace: ECS/ContainerInsights
+                period: ""
+                queryLanguage: CWLI
+                queryMode: Metrics
+                refId: A
+                region: eu-central-1
+                sqlExpression: ""
+                statistic: Average
+            - refId: B
+              queryType: expression
+              datasourceUid: __expr__
+              model:
+                conditions:
+                    - evaluator:
+                        params: []
+                        type: gt
+                      operator:
+                        type: and
+                      query:
+                        params: []
+                      reducer:
+                        params: []
+                        type: last
+                      type: query
+                datasource:
+                    type: __expr__
+                    uid: __expr__
+                expression: A
+                intervalMs: 1000
+                maxDataPoints: 43200
+                reducer: last
+                refId: B
+                type: reduce
+            - refId: C
+              queryType: expression
+              datasourceUid: __expr__
+              model:
+                conditions:
+                    - evaluator:
+                        params:
+                            - 3500
+                        type: gt
+                      operator:
+                        type: and
+                      query:
+                        params:
+                            - C
+                      reducer:
+                        params: []
+                        type: last
+                      type: query
+                datasource:
+                    type: __expr__
+                    uid: __expr__
+                expression: B
+                intervalMs: 1000
+                maxDataPoints: 43200
+                refId: C
+                type: threshold
+          noDataState: NoData
+          execErrState: Error
+          for: 3m
+          annotations:
+            summary: AnythingLLM task RAM > 3500 MB for 3min
+          isPaused: false
+          notification_settings:
+            receiver: discord-alerts
+        - uid: cfvqmhmuvqww0e
+          title: ollama-host-status-down
+          condition: C
+          data:
+            - refId: A
+              relativeTimeRange:
+                from: 600
+                to: 0
+              datasourceUid: P034F075C744B399F
+              model:
+                dimensions:
+                    LoadBalancer: app/dev-ollama-alb/f00b1bd0962c36cd
+                    TargetGroup: targetgroup/dev-ollama-tg/ef1287950bd46b71
+                expression: ""
+                id: ""
+                instant: false
+                intervalMs: 1000
+                label: ""
+                logGroups: []
+                matchExact: true
+                maxDataPoints: 43200
+                metricEditorMode: 0
+                metricName: HealthyHostCount
+                metricQueryType: 0
+                namespace: AWS/ApplicationELB
+                period: ""
+                queryLanguage: CWLI
+                queryMode: Metrics
+                range: true
+                refId: A
+                region: eu-central-1
+                sqlExpression: ""
+                statistic: Average
+            - refId: B
+              queryType: expression
+              datasourceUid: __expr__
+              model:
+                conditions:
+                    - evaluator:
+                        params: []
+                        type: gt
+                      operator:
+                        type: and
+                      query:
+                        params: []
+                      reducer:
+                        params: []
+                        type: last
+                      type: query
+                datasource:
+                    type: __expr__
+                    uid: __expr__
+                expression: A
+                intervalMs: 1000
+                maxDataPoints: 43200
+                reducer: last
+                refId: B
+                type: reduce
+            - refId: C
+              queryType: expression
+              datasourceUid: __expr__
+              model:
+                conditions:
+                    - evaluator:
+                        params:
+                            - 1
+                        type: lt
+                      operator:
+                        type: and
+                      query:
+                        params:
+                            - C
+                      reducer:
+                        params: []
+                        type: last
+                      type: query
+                datasource:
+                    type: __expr__
+                    uid: __expr__
+                expression: B
+                intervalMs: 1000
+                maxDataPoints: 43200
+                refId: C
+                type: threshold
+          noDataState: NoData
+          execErrState: Error
+          for: 2m
+          annotations:
+            summary: Ollama internal ALB has no healthy targets for 2min
+          isPaused: false
+          notification_settings:
+            receiver: discord-alerts
+        - uid: cfvqn4hzlp0jkc
+          title: anythingllm-host-status-down
+          condition: C
+          data:
+            - refId: A
+              relativeTimeRange:
+                from: 600
+                to: 0
+              datasourceUid: P034F075C744B399F
+              model:
+                dimensions:
+                    LoadBalancer: app/dev-app-alb/e39063dc22aa0e4b
+                    TargetGroup: targetgroup/dev-allm-tg/3e69fc51232ed772
+                expression: ""
+                id: ""
+                instant: false
+                intervalMs: 1000
+                label: ""
+                logGroups: []
+                matchExact: true
+                maxDataPoints: 43200
+                metricEditorMode: 0
+                metricName: HealthyHostCount
+                metricQueryType: 0
+                namespace: AWS/ApplicationELB
+                period: ""
+                queryLanguage: CWLI
+                queryMode: Metrics
+                range: true
+                refId: A
+                region: eu-central-1
+                sqlExpression: ""
+                statistic: Average
+            - refId: B
+              queryType: expression
+              datasourceUid: __expr__
+              model:
+                conditions:
+                    - evaluator:
+                        params: []
+                        type: gt
+                      operator:
+                        type: and
+                      query:
+                        params: []
+                      reducer:
+                        params: []
+                        type: last
+                      type: query
+                datasource:
+                    type: __expr__
+                    uid: __expr__
+                expression: A
+                intervalMs: 1000
+                maxDataPoints: 43200
+                reducer: last
+                refId: B
+                type: reduce
+            - refId: C
+              queryType: expression
+              datasourceUid: __expr__
+              model:
+                conditions:
+                    - evaluator:
+                        params:
+                            - 1
+                        type: lt
+                      operator:
+                        type: and
+                      query:
+                        params:
+                            - C
+                      reducer:
+                        params: []
+                        type: last
+                      type: query
+                datasource:
+                    type: __expr__
+                    uid: __expr__
+                expression: B
+                intervalMs: 1000
+                maxDataPoints: 43200
+                refId: C
+                type: threshold
+          noDataState: NoData
+          execErrState: Error
+          for: 2m
+          annotations:
+            summary: AnythingLLM public ALB has no healthy targets for 2min
           isPaused: false
           notification_settings:
             receiver: discord-alerts
