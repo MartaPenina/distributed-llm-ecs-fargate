@@ -1,6 +1,98 @@
 apiVersion: 1
 groups:
     - orgId: 1
+      name: anythingllm-error-alerts
+      folder: grafana-alert-rules
+      interval: 1m
+      rules:
+        - uid: ffvungldzmfpcd
+          title: anythingllm-chat-errors
+          condition: C
+          data:
+            - refId: A
+              relativeTimeRange:
+                from: 3600
+                to: 0
+              datasourceUid: P034F075C744B399F
+              model:
+                dimensions: {}
+                expression: ""
+                id: ""
+                intervalMs: 1000
+                label: ""
+                logGroups: []
+                matchExact: false
+                maxDataPoints: 43200
+                metricEditorMode: 0
+                metricName: ChatErrorCount
+                metricQueryType: 0
+                namespace: AnythingLLM/Errors
+                period: ""
+                queryLanguage: CWLI
+                queryMode: Metrics
+                refId: A
+                region: eu-central-1
+                sqlExpression: ""
+                statistic: Sum
+            - refId: B
+              queryType: expression
+              datasourceUid: __expr__
+              model:
+                conditions:
+                    - evaluator:
+                        params: []
+                        type: gt
+                      operator:
+                        type: and
+                      query:
+                        params: []
+                      reducer:
+                        params: []
+                        type: last
+                      type: query
+                datasource:
+                    type: __expr__
+                    uid: __expr__
+                expression: A
+                intervalMs: 1000
+                maxDataPoints: 43200
+                reducer: last
+                refId: B
+                type: reduce
+            - refId: C
+              queryType: expression
+              datasourceUid: __expr__
+              model:
+                conditions:
+                    - evaluator:
+                        params:
+                            - 0
+                        type: gt
+                      operator:
+                        type: and
+                      query:
+                        params:
+                            - C
+                      reducer:
+                        params: []
+                        type: last
+                      type: query
+                datasource:
+                    type: __expr__
+                    uid: __expr__
+                expression: B
+                intervalMs: 1000
+                maxDataPoints: 43200
+                refId: C
+                type: threshold
+          noDataState: NoData
+          execErrState: Error
+          annotations:
+            summary: AnythingLLM chat error detected — check logs
+          isPaused: false
+          notification_settings:
+            receiver: discord-alerts
+    - orgId: 1
       name: ecs-resource-alerts
       folder: grafana-alert-rules
       interval: 1m
@@ -115,6 +207,8 @@ groups:
                 maxDataPoints: 43200
                 refId: D
                 type: math
+          dashboardUid: ""
+          panelId: 0
           noDataState: NoData
           execErrState: Error
           for: 3m
@@ -232,6 +326,8 @@ groups:
                 maxDataPoints: 43200
                 refId: D
                 type: math
+          dashboardUid: ""
+          panelId: 0
           noDataState: NoData
           execErrState: Error
           for: 3m
@@ -323,6 +419,8 @@ groups:
                 maxDataPoints: 43200
                 refId: C
                 type: threshold
+          dashboardUid: ""
+          panelId: 0
           noDataState: NoData
           execErrState: Error
           for: 3m
@@ -414,6 +512,8 @@ groups:
                 maxDataPoints: 43200
                 refId: C
                 type: threshold
+          dashboardUid: ""
+          panelId: 0
           noDataState: NoData
           execErrState: Error
           for: 3m
@@ -506,6 +606,8 @@ groups:
                 maxDataPoints: 43200
                 refId: C
                 type: threshold
+          dashboardUid: ""
+          panelId: 0
           noDataState: NoData
           execErrState: Error
           for: 2m
@@ -598,6 +700,8 @@ groups:
                 maxDataPoints: 43200
                 refId: C
                 type: threshold
+          dashboardUid: ""
+          panelId: 0
           noDataState: NoData
           execErrState: Error
           for: 2m

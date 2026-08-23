@@ -22,3 +22,5 @@ variable "alb_arn_suffix" { type = string }
 variable "anythingllm_target_group_arn_suffix" { type = string }
 
 variable "ollama_target_group_arn" { type = string }
+
+variable "ollama_alb_dns" { type = string }

@@ -4,12 +4,12 @@
   "metadata": {
     "name": "all-services-per-task-dash",
     "namespace": "default",
-    "uid": "f2f9e870-d3db-4002-897f-770209649f96",
-    "resourceVersion": "1787214973765008",
-    "generation": 8,
-    "creationTimestamp": "2026-08-20T08:00:13Z",
+    "uid": "e98e630d-c0af-4788-a2f1-264f8b5e9151",
+    "resourceVersion": "1787311541303984",
+    "generation": 3,
+    "creationTimestamp": "2026-08-21T11:16:53Z",
     "labels": {
-      "grafana.app/deprecatedInternalID": "677937419177984"
+      "grafana.app/deprecatedInternalID": "1089816862969856"
     },
     "annotations": {
       "grafana.app/createdBy": "access-policy:service",
@@ -17,11 +17,11 @@
       "grafana.app/managerAllowsEdits": "true",
       "grafana.app/managerId": "default",
       "grafana.app/saved-from-ui": "Grafana v13.2.0 (f681b1359f)",
-      "grafana.app/sourceChecksum": "6871adb267cfb1d977e9a2278dfc7588",
+      "grafana.app/sourceChecksum": "d6e2e37d836386b36ae1283df3e230ab",
       "grafana.app/sourcePath": "/etc/grafana/provisioning/dashboards/all-services.json",
-      "grafana.app/sourceTimestamp": "1787137314000",
-      "grafana.app/updatedBy": "user:ffvqekixrr1mod",
-      "grafana.app/updatedTimestamp": "2026-08-20T08:36:13Z"
+      "grafana.app/sourceTimestamp": "1787230445000",
+      "grafana.app/updatedBy": "user:efvugkhylooowb",
+      "grafana.app/updatedTimestamp": "2026-08-21T11:25:41Z"
     }
   },
   "spec": {
@@ -440,10 +440,10 @@
                       "include": {
                         "names": [
                           "Time",
-                          "RX 8216483d65b44603b366b89b88e699ff",
-                          "RX cd9e361bb9bf40718def1fe97a153003",
-                          "TX 8216483d65b44603b366b89b88e699ff",
-                          "TX cd9e361bb9bf40718def1fe97a153003"
+                          "RX 97b2c6fc511f44abbd7d95b7e487a81d",
+                          "RX c739a14138c74c1589823ff13f14150f",
+                          "TX 97b2c6fc511f44abbd7d95b7e487a81d",
+                          "TX c739a14138c74c1589823ff13f14150f"
                         ]
                       }
                     }
@@ -929,8 +929,10 @@
                       "include": {
                         "names": [
                           "Time",
-                          "RX 1db7406ead7e44319e70e8a745f312bb",
-                          "TX 1db7406ead7e44319e70e8a745f312bb"
+                          "RX 3ae1d997389f4137aaa9e665cb2c9251",
+                          "RX ccb75a0d50674105954a618396c74520",
+                          "TX ccb75a0d50674105954a618396c74520",
+                          "TX 3ae1d997389f4137aaa9e665cb2c9251"
                         ]
                       }
                     }

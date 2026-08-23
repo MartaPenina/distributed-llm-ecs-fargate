@@ -51,8 +51,16 @@ resource "aws_ecs_task_definition" "anythingllm" {
         { name = "SIG_SALT", valueFrom = "/distributed-llm-ecs-fargate/dev/anythingllm_sig_salt" }
       ]
 
-      environment = [
-        { name = "STORAGE_DIR", value = "/app/server/storage" }
+          environment = [
+        { name = "STORAGE_DIR", value = "/app/server/storage" },
+        { name = "LLM_PROVIDER", value = "ollama" },
+        { name = "OLLAMA_BASE_PATH", value = "http://${var.ollama_alb_dns}" },
+        # If you rebuild the Ollama image with a different model, update this to match
+        { name = "OLLAMA_MODEL_PREF", value = "qwen2.5:3b" },
+        { name = "EMBEDDING_ENGINE", value = "ollama" },
+        { name = "EMBEDDING_BASE_PATH", value = "http://${var.ollama_alb_dns}" },
+        # Same here — must match the embed model baked into the current image
+        { name = "EMBEDDING_MODEL_PREF", value = "nomic-embed-text:v1.5" }
       ]
 
       healthCheck = {

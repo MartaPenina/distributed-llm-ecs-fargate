@@ -55,6 +55,7 @@ module "ecs_services" {
   alb_arn_suffix                       = module.load_balancer.alb_arn_suffix
   anythingllm_target_group_arn_suffix  = module.load_balancer.anythingllm_target_group_arn_suffix
   ollama_target_group_arn = module.load_balancer.ollama_target_group_arn
+  ollama_alb_dns = module.load_balancer.ollama_internal_alb_dns_name
 }
 
 module "load_balancer" {

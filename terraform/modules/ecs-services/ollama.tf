@@ -8,13 +8,11 @@ resource "aws_ecs_task_definition" "ollama" {
   memory                     = "16384"   # 16 GB
   execution_role_arn         = var.ecs_task_execution_role_arn
   task_role_arn               = var.ecs_task_role_arn
-
   container_definitions = jsonencode([
     {
       name      = "ollama"
       image     = "${var.ecr_repository_url}:v7"
       essential = true
-
       portMappings = [
         {
           name          = "ollama-port"
@@ -22,7 +20,15 @@ resource "aws_ecs_task_definition" "ollama" {
           protocol      = "tcp"
         }
       ]
-      
+
+      # OLLAMA_NUM_PARALLEL — allows Ollama to process multiple requests
+      # concurrently instead of queuing them one at a time. Without this,
+      # concurrent chat requests queue up and can exceed AnythingLLM's
+      # internal timeout, causing AbortError / "network error" in chat.
+      environment = [
+        { name = "OLLAMA_NUM_PARALLEL", value = "4" }
+      ]
+
       # health check: Ollama responds on / when ready
       healthCheck = {
         command     = ["CMD-SHELL", "ollama list || exit 1"]
@@ -31,7 +37,6 @@ resource "aws_ecs_task_definition" "ollama" {
         retries     = 3
         startPeriod = 60  # give the model time to load before first check counts
       }
-
       logConfiguration = {
         logDriver = "awslogs"
         options = {
@@ -42,16 +47,13 @@ resource "aws_ecs_task_definition" "ollama" {
       }
     }
   ])
-
   tags = { Name = "${var.project_name}-${var.environment}-ollama-td" }
 }
-
 # CloudWatch Log Group — must exist before the task starts writing logs to it
 resource "aws_cloudwatch_log_group" "ollama" {
   name              = "/ecs/${var.project_name}-${var.environment}-ollama"
   retention_in_days = 14
 }
-
 # ECS Service — keeps 1 Ollama task running, restarts it if it dies
 resource "aws_ecs_service" "ollama" {
   name            = "${var.project_name}-${var.environment}-ollama"
@@ -59,29 +61,24 @@ resource "aws_ecs_service" "ollama" {
   task_definition = aws_ecs_task_definition.ollama.arn
   desired_count   = 2
   launch_type     = "FARGATE"
-
   network_configuration {
     subnets         = var.private_app_subnet_ids
     security_groups = [var.ecs_tasks_sg_id]
   }
-
   # ECS Service Connect — gives this service an internal DNS name other
   # services can use to reach it (e.g. "ollama.internal") without hardcoded IPs
   service_connect_configuration {
     enabled   = true
     namespace = aws_service_discovery_http_namespace.main.arn
-
     service {
       port_name      = "ollama-port"
       discovery_name = "ollama"
-
       client_alias {
         port     = 11434
         dns_name = "ollama"
       }
     }
   }
-
   # Registers Ollama tasks with the internal ALB's target group — this is
   # what actually makes the internal load balancer aware of this task,
   # same pattern as anythingllm's load_balancer block for the public ALB
@@ -90,8 +87,6 @@ resource "aws_ecs_service" "ollama" {
     container_name    = "ollama"
     container_port     = 11434
   }
-
-
   # named so Service Connect knows which container/port to expose
   # (must match a portMapping name in the task definition — will add below)
 }
