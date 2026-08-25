@@ -4,8 +4,8 @@ resource "aws_ecs_task_definition" "ollama" {
   family                   = "${var.project_name}-${var.environment}-ollama"
   requires_compatibilities = ["FARGATE"]
   network_mode              = "awsvpc"  # required for Fargate — each task gets its own ENI
-  cpu                        = "8192"    # 8 vCPU
-  memory                     = "16384"   # 16 GB
+  cpu                        = "4096"    # 4 vCPU
+  memory                     = "4096"   # 4 GB
   execution_role_arn         = var.ecs_task_execution_role_arn
   task_role_arn               = var.ecs_task_role_arn
   container_definitions = jsonencode([
@@ -59,7 +59,7 @@ resource "aws_ecs_service" "ollama" {
   name            = "${var.project_name}-${var.environment}-ollama"
   cluster = var.ollama_cluster_id
   task_definition = aws_ecs_task_definition.ollama.arn
-  desired_count   = 2
+  desired_count   = 1
   launch_type     = "FARGATE"
   network_configuration {
     subnets         = var.private_app_subnet_ids
