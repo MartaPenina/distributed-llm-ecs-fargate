@@ -85,6 +85,8 @@ groups:
                 maxDataPoints: 43200
                 refId: C
                 type: threshold
+          dashboardUid: ""
+          panelId: 0
           noDataState: NoData
           execErrState: Error
           annotations:
@@ -707,6 +709,179 @@ groups:
           for: 2m
           annotations:
             summary: AnythingLLM public ALB has no healthy targets for 2min
+          isPaused: false
+          notification_settings:
+            receiver: discord-alerts
+    - orgId: 1
+      name: business-metrics
+      folder: anythingllm-business-alerts
+      interval: 5m
+      rules:
+        - uid: bfw639fep6o00c
+          title: anythingllm-chat-success-rate-low
+          condition: C
+          data:
+            - refId: A
+              relativeTimeRange:
+                from: 3600
+                to: 0
+              datasourceUid: P034F075C744B399F
+              model:
+                dimensions: {}
+                expression: ""
+                id: ""
+                intervalMs: 1000
+                label: ""
+                logGroups: []
+                matchExact: false
+                maxDataPoints: 43200
+                metricEditorMode: 0
+                metricName: ChatResponsesCompleted
+                metricQueryType: 0
+                namespace: AnythingLLM/Business
+                period: 1h
+                queryLanguage: CWLI
+                queryMode: Metrics
+                refId: A
+                region: eu-central-1
+                sqlExpression: ""
+                statistic: Sum
+            - refId: D
+              relativeTimeRange:
+                from: 3600
+                to: 0
+              datasourceUid: P034F075C744B399F
+              model:
+                datasource:
+                    type: cloudwatch
+                    uid: P034F075C744B399F
+                dimensions: {}
+                expression: ""
+                id: ""
+                intervalMs: 1000
+                label: ""
+                logGroups: []
+                matchExact: false
+                maxDataPoints: 43200
+                metricEditorMode: 0
+                metricName: ChatErrorCount
+                metricQueryType: 0
+                namespace: AnythingLLM/Errors
+                period: 1h
+                queryLanguage: CWLI
+                queryMode: Metrics
+                refId: D
+                region: eu-central-1
+                sqlExpression: ""
+                statistic: Sum
+            - refId: B
+              queryType: expression
+              datasourceUid: __expr__
+              model:
+                conditions:
+                    - evaluator:
+                        params: []
+                        type: gt
+                      operator:
+                        type: and
+                      query:
+                        params: []
+                      reducer:
+                        params: []
+                        type: last
+                      type: query
+                datasource:
+                    type: __expr__
+                    uid: __expr__
+                expression: A
+                intervalMs: 1000
+                maxDataPoints: 43200
+                reducer: last
+                refId: B
+                type: reduce
+            - refId: E
+              datasourceUid: __expr__
+              model:
+                conditions:
+                    - evaluator:
+                        params:
+                            - 0
+                            - 0
+                        type: gt
+                      operator:
+                        type: and
+                      query:
+                        params: []
+                      reducer:
+                        params: []
+                        type: avg
+                      type: query
+                datasource:
+                    name: Expression
+                    type: __expr__
+                    uid: __expr__
+                expression: D
+                intervalMs: 1000
+                maxDataPoints: 43200
+                reducer: last
+                refId: E
+                type: reduce
+            - refId: F
+              datasourceUid: __expr__
+              model:
+                conditions:
+                    - evaluator:
+                        params:
+                            - 0
+                            - 0
+                        type: gt
+                      operator:
+                        type: and
+                      query:
+                        params: []
+                      reducer:
+                        params: []
+                        type: avg
+                      type: query
+                datasource:
+                    name: Expression
+                    type: __expr__
+                    uid: __expr__
+                expression: ($B / ($B + $E)) * 100
+                intervalMs: 1000
+                maxDataPoints: 43200
+                refId: F
+                type: math
+            - refId: C
+              datasourceUid: __expr__
+              model:
+                conditions:
+                    - evaluator:
+                        params:
+                            - 85
+                        type: lt
+                      operator:
+                        type: and
+                      query:
+                        params: []
+                      reducer:
+                        params: []
+                        type: avg
+                      type: query
+                datasource:
+                    name: Expression
+                    type: __expr__
+                    uid: __expr__
+                expression: F
+                intervalMs: 1000
+                maxDataPoints: 43200
+                refId: C
+                type: threshold
+          noDataState: NoData
+          execErrState: Error
+          for: 5m
+          annotations:
+            summary: AnythingLLM chat success rate below 85% in the last hour
           isPaused: false
           notification_settings:
             receiver: discord-alerts

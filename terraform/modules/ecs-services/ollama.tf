@@ -11,7 +11,7 @@ resource "aws_ecs_task_definition" "ollama" {
   container_definitions = jsonencode([
     {
       name      = "ollama"
-      image     = "${var.ecr_repository_url}:v7"
+      image     = "${var.ecr_repository_url}:v10"
       essential = true
       portMappings = [
         {

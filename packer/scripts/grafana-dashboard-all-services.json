@@ -4,12 +4,12 @@
   "metadata": {
     "name": "all-services-per-task-dash",
     "namespace": "default",
-    "uid": "e98e630d-c0af-4788-a2f1-264f8b5e9151",
-    "resourceVersion": "1787311541303984",
-    "generation": 3,
-    "creationTimestamp": "2026-08-21T11:16:53Z",
+    "uid": "57c6523c-7aa4-4daf-9752-4981ae76b4ab",
+    "resourceVersion": "1787635833131007",
+    "generation": 10,
+    "creationTimestamp": "2026-08-23T12:58:41Z",
     "labels": {
-      "grafana.app/deprecatedInternalID": "1089816862969856"
+      "grafana.app/deprecatedInternalID": "1840211208929280"
     },
     "annotations": {
       "grafana.app/createdBy": "access-policy:service",
@@ -17,11 +17,11 @@
       "grafana.app/managerAllowsEdits": "true",
       "grafana.app/managerId": "default",
       "grafana.app/saved-from-ui": "Grafana v13.2.0 (f681b1359f)",
-      "grafana.app/sourceChecksum": "d6e2e37d836386b36ae1283df3e230ab",
+      "grafana.app/sourceChecksum": "d08061e53008002b50fc4391562f72f0",
       "grafana.app/sourcePath": "/etc/grafana/provisioning/dashboards/all-services.json",
-      "grafana.app/sourceTimestamp": "1787230445000",
-      "grafana.app/updatedBy": "user:efvugkhylooowb",
-      "grafana.app/updatedTimestamp": "2026-08-21T11:25:41Z"
+      "grafana.app/sourceTimestamp": "1787325545000",
+      "grafana.app/updatedBy": "user:bfw1ukcqkkkcge",
+      "grafana.app/updatedTimestamp": "2026-08-25T05:30:33Z"
     }
   },
   "spec": {
@@ -421,7 +421,7 @@
                         "period": "",
                         "queryLanguage": "CWLI",
                         "queryMode": "Metrics",
-                        "region": "default",
+                        "region": "eu-central-1",
                         "sqlExpression": "",
                         "statistic": "Sum"
                       }
@@ -440,10 +440,10 @@
                       "include": {
                         "names": [
                           "Time",
-                          "RX 97b2c6fc511f44abbd7d95b7e487a81d",
-                          "RX c739a14138c74c1589823ff13f14150f",
-                          "TX 97b2c6fc511f44abbd7d95b7e487a81d",
-                          "TX c739a14138c74c1589823ff13f14150f"
+                          "RX 424b678a4a6047e0b96a296f46c2b793",
+                          "RX fd362a1d347647a2a541578b0fdc672c",
+                          "TX 424b678a4a6047e0b96a296f46c2b793",
+                          "TX fd362a1d347647a2a541578b0fdc672c"
                         ]
                       }
                     }
@@ -910,7 +910,7 @@
                         "period": "",
                         "queryLanguage": "CWLI",
                         "queryMode": "Metrics",
-                        "region": "default",
+                        "region": "eu-central-1",
                         "sqlExpression": "",
                         "statistic": "Sum"
                       }
@@ -929,10 +929,8 @@
                       "include": {
                         "names": [
                           "Time",
-                          "RX 3ae1d997389f4137aaa9e665cb2c9251",
-                          "RX ccb75a0d50674105954a618396c74520",
-                          "TX ccb75a0d50674105954a618396c74520",
-                          "TX 3ae1d997389f4137aaa9e665cb2c9251"
+                          "RX b4db33329bbb4cfc9c2562958deafb2a",
+                          "TX b4db33329bbb4cfc9c2562958deafb2a"
                         ]
                       }
                     }
@@ -1014,6 +1012,156 @@
                     "stacking": {
                       "group": "A",
                       "mode": "none"
+                    },
+                    "thresholdsStyle": {
+                      "mode": "off"
+                    }
+                  }
+                },
+                "overrides": []
+              }
+            }
+          }
+        }
+      },
+      "panel-7": {
+        "kind": "Panel",
+        "spec": {
+          "id": 7,
+          "title": "Chat responses vs errors (last hour)",
+          "description": "",
+          "links": [],
+          "data": {
+            "kind": "QueryGroup",
+            "spec": {
+              "queries": [
+                {
+                  "kind": "PanelQuery",
+                  "spec": {
+                    "query": {
+                      "kind": "DataQuery",
+                      "group": "cloudwatch",
+                      "version": "v0",
+                      "datasource": {
+                        "name": "P034F075C744B399F"
+                      },
+                      "spec": {
+                        "dimensions": {},
+                        "expression": "",
+                        "id": "",
+                        "label": "",
+                        "logGroups": [],
+                        "matchExact": false,
+                        "metricEditorMode": 0,
+                        "metricName": "ChatResponsesCompleted",
+                        "metricQueryType": 0,
+                        "namespace": "AnythingLLM/Business",
+                        "period": "30m",
+                        "queryLanguage": "CWLI",
+                        "queryMode": "Metrics",
+                        "region": "eu-central-1",
+                        "sqlExpression": "",
+                        "statistic": "Sum"
+                      }
+                    },
+                    "refId": "B",
+                    "hidden": false
+                  }
+                },
+                {
+                  "kind": "PanelQuery",
+                  "spec": {
+                    "query": {
+                      "kind": "DataQuery",
+                      "group": "cloudwatch",
+                      "version": "v0",
+                      "datasource": {
+                        "name": "P034F075C744B399F"
+                      },
+                      "spec": {
+                        "label": "",
+                        "logGroups": [],
+                        "metricEditorMode": 0,
+                        "metricName": "ChatErrorCount",
+                        "metricQueryType": 0,
+                        "namespace": "AnythingLLM/Errors",
+                        "period": "30m",
+                        "queryMode": "Metrics",
+                        "region": "eu-central-1",
+                        "statistic": "Sum"
+                      }
+                    },
+                    "refId": "A",
+                    "hidden": false
+                  }
+                }
+              ],
+              "transformations": [],
+              "queryOptions": {}
+            }
+          },
+          "vizConfig": {
+            "kind": "VizConfig",
+            "group": "barchart",
+            "version": "13.2.0",
+            "spec": {
+              "options": {
+                "barRadius": 0.05,
+                "barWidth": 0.95,
+                "fullHighlight": false,
+                "groupWidth": 0.8,
+                "legend": {
+                  "calcs": [],
+                  "displayMode": "list",
+                  "placement": "bottom",
+                  "showLegend": true
+                },
+                "orientation": "auto",
+                "showValue": "auto",
+                "stacking": "none",
+                "tooltip": {
+                  "hideZeros": false,
+                  "mode": "single",
+                  "sort": "none"
+                },
+                "xField": "time",
+                "xTickLabelRotation": 0,
+                "xTickLabelSpacing": 100
+              },
+              "fieldConfig": {
+                "defaults": {
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "value": 0,
+                        "color": "green"
+                      },
+                      {
+                        "value": 80,
+                        "color": "red"
+                      }
+                    ]
+                  },
+                  "color": {
+                    "mode": "palette-classic"
+                  },
+                  "custom": {
+                    "axisBorderShow": false,
+                    "axisCenteredZero": false,
+                    "axisColorMode": "text",
+                    "axisLabel": "",
+                    "axisPlacement": "auto",
+                    "fillOpacity": 100,
+                    "gradientMode": "none",
+                    "hideFrom": {
+                      "legend": false,
+                      "tooltip": false,
+                      "viz": false
+                    },
+                    "lineWidth": 0,
+                    "scaleDistribution": {
+                      "type": "linear"
                     },
                     "thresholdsStyle": {
                       "mode": "off"
@@ -1108,6 +1256,19 @@
                 "name": "panel-6"
               }
             }
+          },
+          {
+            "kind": "GridLayoutItem",
+            "spec": {
+              "x": 0,
+              "y": 32,
+              "width": 12,
+              "height": 8,
+              "element": {
+                "kind": "ElementReference",
+                "name": "panel-7"
+              }
+            }
           }
         ]
       }
@@ -1118,9 +1279,9 @@
     "tags": [],
     "timeSettings": {
       "timezone": "browser",
-      "from": "now-3h",
+      "from": "now-6h",
       "to": "now",
-      "autoRefresh": "1m",
+      "autoRefresh": "5s",
       "autoRefreshIntervals": [
         "5s",
         "10s",
